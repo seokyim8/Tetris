@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TetrisGame extends ApplicationAdapter {
+	//TODO: Create final variables for width and height of tetris board
 	SpriteBatch batch;
 	Texture container_texture;
 	Container container;
@@ -27,6 +28,7 @@ public class TetrisGame extends ApplicationAdapter {
 	Texture purple_block;
 	Texture game_over_sign;
 	int time_passed;
+	int press_timer;
 	Grid[][] board;
 	Piece current_piece;
 	boolean game_over;
@@ -67,6 +69,7 @@ public class TetrisGame extends ApplicationAdapter {
 		spawn_piece();
 
 		time_passed = 0;
+		press_timer = 3; // 3/60 seconds ==> adequate frequency limit for button presses
 		game_over = false;
 	}
 
@@ -116,6 +119,13 @@ public class TetrisGame extends ApplicationAdapter {
 	}
 
 	public void handle_user_input() throws Exception{
+		//Limiting press frequencies
+		//TODO: Maybe keep separate timers for different keys?
+		if(press_timer < 3){
+			press_timer++;
+			return;
+		}
+
 		if(game_over){
 			if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
 				game_over = false;
@@ -127,10 +137,10 @@ public class TetrisGame extends ApplicationAdapter {
 				}
 				spawn_piece();
 				time_passed = 0;
+				press_timer = 0;
 			}
 			return;
 		}
-		//TODO: ADD SPACE BAR
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
 			current_piece.move_left();
 		}
@@ -156,6 +166,7 @@ public class TetrisGame extends ApplicationAdapter {
 			}
 			time_passed = 0;
 		}
+		press_timer = 0;
 	}
 
 	@Override
