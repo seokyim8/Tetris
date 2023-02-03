@@ -117,6 +117,17 @@ public class TetrisGame extends ApplicationAdapter {
 
 	public void handle_user_input() throws Exception{
 		if(game_over){
+			if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+				game_over = false;
+
+				for(int i = 0; i < 15; i++){
+					for(int j = 0; j < 10; j++){
+						board[i][j] = null;
+					}
+				}
+				spawn_piece();
+				time_passed = 0;
+			}
 			return;
 		}
 		//TODO: ADD SPACE BAR
@@ -133,7 +144,16 @@ public class TetrisGame extends ApplicationAdapter {
 					game_over = true;
 				}
 			}
-
+			time_passed = 0;
+		}
+		else if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+			while(current_piece.move_down()){
+				current_piece.move_down();
+			}
+			clear_possible_lines();
+			if(!spawn_piece()){
+				game_over = true;
+			}
 			time_passed = 0;
 		}
 	}
