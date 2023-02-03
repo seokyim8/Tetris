@@ -113,9 +113,33 @@ public class TetrisGame extends ApplicationAdapter {
 	}
 
 	public void clear_possible_lines(){
-		//TODO: implement this method
+		for(int i = 0; i < 15; i++){
+			boolean gap_exists = false;
+			for(int j = 0; j < 10; j++){
+				if(board[i][j] == null){
+					gap_exists = true;
+					break;
+				}
+			}
+			if(gap_exists){
+				continue;
+			}
+			delete_row(i);
+		}
+	}
+	private void delete_row(int row){
+		for(int i = 0; i < 10; i++){
+			board[row][i] = null;
+		}
 
-
+		for(int i = row; i > 0; i--){
+			for(int j = 0; j < 10; j++){
+				board[i][j] = board[i-1][j];
+			}
+		}
+		for(int i = 0; i < 10; i++){
+			board[0][i] = null;
+		}
 	}
 
 	public void handle_user_input() throws Exception{
@@ -166,11 +190,9 @@ public class TetrisGame extends ApplicationAdapter {
 		}
 		else if(Gdx.input.isKeyJustPressed(Input.Keys.Z)){// Counter clockwise
 			current_piece.rotate_counterclockwise();
-			press_timer = 0;
 		}
 		else if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){// Clockwise
 			current_piece.rotate_clockwise();
-			press_timer = 0;
 		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
