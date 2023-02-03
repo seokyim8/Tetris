@@ -39,6 +39,7 @@ public class TetrisGame extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		//setting up the container for tetris pieces
+		//TODO: change container image
 		container_texture = new Texture("container.png");
 		container = new Container(container_texture);
 		container.setPosition(x_padding,y_padding);
@@ -78,8 +79,9 @@ public class TetrisGame extends ApplicationAdapter {
 	}
 
 	public boolean spawn_piece(){
-		if(board[0][4] != null){
-			current_piece = null;
+		current_piece = Piece.create_piece(new int[]{2,4},
+				upcoming_blocks.remove(0), board);
+		if(current_piece == null){
 			return false;
 		}
 
@@ -87,8 +89,6 @@ public class TetrisGame extends ApplicationAdapter {
 			generate_upcoming_blocks();
 		}
 
-		current_piece = new Piece(new int[]{0,4},
-				upcoming_blocks.remove(0), board);
 		return true;
 	}
 
@@ -100,6 +100,7 @@ public class TetrisGame extends ApplicationAdapter {
 		if(time_passed >= 90){
 			//make the tetris block fall vertically a single grid
 			if(!current_piece.move_down()){
+				clear_possible_lines();
 				if(!spawn_piece()){
 					game_over = true;
 				}
@@ -107,6 +108,13 @@ public class TetrisGame extends ApplicationAdapter {
 			time_passed = 0;
 		}
 	}
+
+	public void clear_possible_lines(){
+		//TODO: implement this method
+
+
+	}
+
 	public void handle_user_input() throws Exception{
 		if(game_over){
 			return;
@@ -120,6 +128,7 @@ public class TetrisGame extends ApplicationAdapter {
 		}
 		else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
 			if(!current_piece.move_down()){
+				clear_possible_lines();
 				if(!spawn_piece()){
 					game_over = true;
 				}
