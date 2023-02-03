@@ -69,7 +69,7 @@ public class TetrisGame extends ApplicationAdapter {
 		spawn_piece();
 
 		time_passed = 0;
-		press_timer = 3; // 3/60 seconds ==> adequate frequency limit for button presses
+		press_timer = 0;
 		game_over = false;
 	}
 
@@ -119,15 +119,8 @@ public class TetrisGame extends ApplicationAdapter {
 	}
 
 	public void handle_user_input() throws Exception{
-		//Limiting press frequencies
-		//TODO: Maybe keep separate timers for different keys?
-		if(press_timer < 3){
-			press_timer++;
-			return;
-		}
-
 		if(game_over){
-			if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+			if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 				game_over = false;
 
 				for(int i = 0; i < 15; i++){
@@ -141,13 +134,16 @@ public class TetrisGame extends ApplicationAdapter {
 			}
 			return;
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+
+		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
 			current_piece.move_left();
+			press_timer = 0;
 		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
 			current_piece.move_right();
+			press_timer = 0;
 		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
 			if(!current_piece.move_down()){
 				clear_possible_lines();
 				if(!spawn_piece()){
@@ -155,8 +151,9 @@ public class TetrisGame extends ApplicationAdapter {
 				}
 			}
 			time_passed = 0;
+			press_timer = 0;
 		}
-		else if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 			while(current_piece.move_down()){
 				current_piece.move_down();
 			}
@@ -165,8 +162,45 @@ public class TetrisGame extends ApplicationAdapter {
 				game_over = true;
 			}
 			time_passed = 0;
+			press_timer = 0;
 		}
-		press_timer = 0;
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.Z)){// Counter clockwise
+			current_piece.rotate_counterclockwise();
+			press_timer = 0;
+		}
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){// Clockwise
+			current_piece.rotate_clockwise();
+			press_timer = 0;
+		}
+
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+			press_timer++;
+			if(press_timer > 9){
+				current_piece.move_left();
+				press_timer -= 3;
+			}
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+			press_timer++;
+			if(press_timer > 9){
+				current_piece.move_right();
+				press_timer -= 3;
+			}
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+			press_timer++;
+			if(press_timer > 9){
+				if(!current_piece.move_down()){
+					clear_possible_lines();
+					if(!spawn_piece()){
+						game_over = true;
+					}
+					press_timer = 3;
+				}
+				time_passed = 0;
+				press_timer -= 3;
+			}
+		}
 	}
 
 	@Override

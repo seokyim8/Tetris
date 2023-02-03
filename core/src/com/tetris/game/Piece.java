@@ -61,7 +61,70 @@ public class Piece {
         return true;
     }
 
-    //TODO: implement rotation mechanism
+    private boolean can_rotate_clockwise(){
+        for(int[] part: parts){
+            int new_x, new_y;
+            int x = part[0];
+            int y = part[1];
+
+            new_x = y;
+            new_y = -1 * x;
+
+            if(!can_exist_here(board, location[0]+new_x, location[1]+new_y)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+    public boolean rotate_clockwise(){
+        remove_grid();
+        if(!can_rotate_clockwise()){
+            fill_grid();
+            return false;
+        }
+
+        for(int[] part: parts){
+            int temp = part[0];
+            part[0] = part[1];
+            part[1] = temp * -1;
+        }
+
+        fill_grid();
+        return true;
+    }
+    private boolean can_rotate_counterclockwise(){
+        for(int[] part: parts){
+            int new_x, new_y;
+            int x = part[0];
+            int y = part[1];
+
+            new_x = -1 * y;
+            new_y = x;
+
+            if(!can_exist_here(board, location[0]+new_x, location[1]+new_y)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+    public boolean rotate_counterclockwise(){
+        remove_grid();
+        if(!can_rotate_counterclockwise()){
+            fill_grid();
+            return false;
+        }
+
+        for(int[] part: parts){
+            int temp = part[0];
+            part[0] = -1 * part[1];
+            part[1] = temp;
+        }
+
+        fill_grid();
+        return true;
+    }
 
     private void fill_grid(){
         for(int i = 0; i < parts.length; i++){
