@@ -19,6 +19,8 @@ public class TetrisGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture container_texture;
 	Container container;
+	static final int rows = 22;
+	static final int cols = 10;
 	Texture red_block;
 	Texture blue_block;
 	Texture orange_block;
@@ -42,7 +44,7 @@ public class TetrisGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		//setting up the container for tetris pieces
 		//TODO: change container image
-		container_texture = new Texture("container.png");
+		container_texture = new Texture("board.png");
 		container = new Container(container_texture);
 		container.setPosition(x_padding,y_padding);
 
@@ -58,7 +60,7 @@ public class TetrisGame extends ApplicationAdapter {
 		purple_block = new Texture("purple_block.png");
 
 		//initializing tetris board
-		board = new Grid[15][10];
+		board = new Grid[rows][cols];
 
 		//initializing upcoming list of blocks
 		upcoming_blocks = new ArrayList<>();
@@ -113,9 +115,9 @@ public class TetrisGame extends ApplicationAdapter {
 	}
 
 	public void clear_possible_lines(){
-		for(int i = 0; i < 15; i++){
+		for(int i = 0; i < rows; i++){
 			boolean gap_exists = false;
-			for(int j = 0; j < 10; j++){
+			for(int j = 0; j < cols; j++){
 				if(board[i][j] == null){
 					gap_exists = true;
 					break;
@@ -128,16 +130,16 @@ public class TetrisGame extends ApplicationAdapter {
 		}
 	}
 	private void delete_row(int row){
-		for(int i = 0; i < 10; i++){
+		for(int i = 0; i < cols; i++){
 			board[row][i] = null;
 		}
 
 		for(int i = row; i > 0; i--){
-			for(int j = 0; j < 10; j++){
+			for(int j = 0; j < cols; j++){
 				board[i][j] = board[i-1][j];
 			}
 		}
-		for(int i = 0; i < 10; i++){
+		for(int i = 0; i < cols; i++){
 			board[0][i] = null;
 		}
 	}
@@ -147,8 +149,8 @@ public class TetrisGame extends ApplicationAdapter {
 			if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 				game_over = false;
 
-				for(int i = 0; i < 15; i++){
-					for(int j = 0; j < 10; j++){
+				for(int i = 0; i < rows; i++){
+					for(int j = 0; j < cols; j++){
 						board[i][j] = null;
 					}
 				}
@@ -241,8 +243,8 @@ public class TetrisGame extends ApplicationAdapter {
 
 		batch.begin();
 		container.draw(batch);
-		for(int i = 0; i < 15; i++){
-			for(int j = 0; j < 10; j++){
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
 				if(board[i][j] != null){
 					Texture temp = red_block;
 					switch(board[i][j].color){
@@ -265,7 +267,7 @@ public class TetrisGame extends ApplicationAdapter {
 							temp = purple_block;
 					}
 					Sprite filler = new Sprite(temp);
-					filler.setPosition(x_padding + j*44, y_padding + (14-i) * 44);
+					filler.setPosition(x_padding + j*44, y_padding + (rows-1-i) * 44);
 					filler.draw(batch);
 				}
 			}

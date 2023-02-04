@@ -55,7 +55,7 @@ public class Piece {
     }
 
     private static boolean can_exist_here(Grid[][] board, int x, int y){
-        if(x < 0 || x >= 15 || y < 0 || y >=10 || board[x][y] != null){
+        if(x < 0 || x >= TetrisGame.rows || y < 0 || y >= TetrisGame.cols || board[x][y] != null){
             return false;
         }
         return true;
