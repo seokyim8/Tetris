@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -21,6 +22,9 @@ public class TetrisGame extends ApplicationAdapter {
 	Container container;
 	static final int rows = 22;
 	static final int cols = 10;
+	static final int upcoming_blocks_visible_length = 6;
+	static final int block_size = 44;
+	BitmapFont font;
 	Texture red_block;
 	Texture blue_block;
 	Texture orange_block;
@@ -29,6 +33,13 @@ public class TetrisGame extends ApplicationAdapter {
 	Texture light_blue_block;
 	Texture purple_block;
 	Texture game_over_sign;
+	Texture red_piece;
+	Texture blue_piece;
+	Texture orange_piece;
+	Texture green_piece;
+	Texture yellow_piece;
+	Texture light_blue_piece;
+	Texture purple_piece;
 	int time_passed;
 	int press_timer;
 	Grid[][] board;
@@ -50,7 +61,7 @@ public class TetrisGame extends ApplicationAdapter {
 
 		game_over_sign = new Texture("game_over.png");
 
-		//initializing textures for blocks
+		//initializing textures for blocks and pieces
 		red_block = new Texture("red_block.png");
 		blue_block = new Texture("blue_block.png");
 		orange_block = new Texture("orange_block.png");
@@ -58,6 +69,13 @@ public class TetrisGame extends ApplicationAdapter {
 		yellow_block = new Texture("yellow_block.png");
 		light_blue_block = new Texture("light_blue_block.png");
 		purple_block = new Texture("purple_block.png");
+		red_piece = new Texture("red_piece.png");
+		blue_piece = new Texture("blue_piece.png");
+		orange_piece = new Texture("orange_piece.png");
+		green_piece = new Texture("green_piece.png");
+		yellow_piece = new Texture("yellow_piece.png");
+		light_blue_piece = new Texture("light_blue_piece.png");
+		purple_piece = new Texture("purple_piece.png");
 
 		//initializing tetris board
 		board = new Grid[rows][cols];
@@ -66,6 +84,7 @@ public class TetrisGame extends ApplicationAdapter {
 		upcoming_blocks = new ArrayList<>();
 		generate_upcoming_blocks();
 		generate_upcoming_blocks();
+		font = new BitmapFont();
 
 		//initializing currently held tetris piece
 		spawn_piece();
@@ -267,11 +286,40 @@ public class TetrisGame extends ApplicationAdapter {
 							temp = purple_block;
 					}
 					Sprite filler = new Sprite(temp);
-					filler.setPosition(x_padding + j*44, y_padding + (rows-1-i) * 44);
+					filler.setPosition(x_padding + j*block_size, y_padding + (rows-1-i) * block_size);
 					filler.draw(batch);
 				}
 			}
 		}
+		for(int i = 0; i < upcoming_blocks.size() && i <= upcoming_blocks_visible_length; i++){
+			Color color = upcoming_blocks.get(i);
+			Texture temp = red_piece;
+			switch(color){
+				case BLUE:
+					temp = blue_piece;
+					break;
+				case GREEN:
+					temp = green_piece;
+					break;
+				case ORANGE:
+					temp = orange_piece;
+					break;
+				case YELLOW:
+					temp = yellow_piece;
+					break;
+				case LIGHT_BLUE:
+					temp = light_blue_piece;
+					break;
+				case PURPLE:
+					temp = purple_piece;
+			}
+			Sprite upcoming_block = new Sprite(temp);
+			upcoming_block.setSize(120, 120);
+			upcoming_block.setPosition(x_padding * 2 + cols * block_size, y_padding + (upcoming_blocks_visible_length - i) * 120);
+			upcoming_block.draw(batch);
+		}
+		font.draw(batch, "Next Pieces", x_padding * 3 + cols * block_size, y_padding + upcoming_blocks_visible_length * 120 + 150);
+
 		if(game_over){
 			new Sprite(game_over_sign).draw(batch);
 		}
@@ -290,5 +338,13 @@ public class TetrisGame extends ApplicationAdapter {
 		light_blue_block.dispose();
 		purple_block.dispose();
 		game_over_sign.dispose();
+		red_piece.dispose();
+		blue_piece.dispose();
+		green_piece.dispose();
+		orange_piece.dispose();
+		yellow_piece.dispose();
+		light_blue_piece.dispose();
+		purple_piece.dispose();
+		font.dispose();
 	}
 }
