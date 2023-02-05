@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.tetris.game.sprites.Container;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class GameScreen extends ScreenAdapter {
     Texture purple_piece;
     int time_passed;
     int press_timer;
+    int total_time_passed;
     Grid[][] board;
     Piece current_piece;
     Color saved_piece;
@@ -58,8 +60,6 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        //TODO: delay before first input
-
         //setting up the container for tetris pieces
         container_texture = new Texture("board.png");
         container = new Container(container_texture);
@@ -98,6 +98,7 @@ public class GameScreen extends ScreenAdapter {
 
         time_passed = 0;
         press_timer = 0;
+        total_time_passed = 0;
         game_over = false;
     }
 
@@ -284,6 +285,11 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float dt){
+        //setting delay before very first input
+        total_time_passed++;
+        if(total_time_passed > 500000){
+            total_time_passed = 3;
+        }
         ScreenUtils.clear(0, 0, 0, 1);
         try {
             update_board(1);
@@ -291,7 +297,9 @@ public class GameScreen extends ScreenAdapter {
             throw new RuntimeException(e);
         }
         try {
-            handle_user_input();
+            if(total_time_passed > 2){
+                handle_user_input();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
