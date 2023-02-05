@@ -181,7 +181,6 @@ public class TetrisGame extends ApplicationAdapter {
 	}
 
 	public void handle_user_input() throws Exception{
-		//TODO: HANDLE SHIFT PRESSES
 		if(game_over){
 			if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 				game_over = false;
@@ -191,9 +190,12 @@ public class TetrisGame extends ApplicationAdapter {
 						board[i][j] = null;
 					}
 				}
-				spawn_piece();
 				time_passed = 0;
 				press_timer = 0;
+				upcoming_blocks = new ArrayList<>();
+				generate_upcoming_blocks();
+				generate_upcoming_blocks();
+				spawn_piece();
 			}
 			return;
 		}
