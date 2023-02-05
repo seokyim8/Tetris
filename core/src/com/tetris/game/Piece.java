@@ -210,4 +210,8 @@ public class Piece {
         fill_grid();
         return true;
     }
+
+    public void delete_piece(){
+        remove_grid();
+    }
 }

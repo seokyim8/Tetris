@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class TetrisGame extends ApplicationAdapter {
-	//TODO: Create final variables for width and height of tetris board
 	SpriteBatch batch;
 	Texture container_texture;
 	Container container;
@@ -24,7 +23,9 @@ public class TetrisGame extends ApplicationAdapter {
 	static final int cols = 10;
 	static final int upcoming_blocks_visible_length = 6;
 	static final int block_size = 44;
-	BitmapFont font;
+	static final int visible_piece_size = 120;
+	BitmapFont next_piece_font;
+	BitmapFont saved_piece_font;
 	Texture red_block;
 	Texture blue_block;
 	Texture orange_block;
@@ -44,6 +45,7 @@ public class TetrisGame extends ApplicationAdapter {
 	int press_timer;
 	Grid[][] board;
 	Piece current_piece;
+	Color saved_piece;
 	boolean game_over;
 	final int x_padding = 20;
 	final int y_padding = 15;
@@ -54,10 +56,9 @@ public class TetrisGame extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		//setting up the container for tetris pieces
-		//TODO: change container image
 		container_texture = new Texture("board.png");
 		container = new Container(container_texture);
-		container.setPosition(x_padding,y_padding);
+		container.setPosition(x_padding * 2 + visible_piece_size,y_padding);
 
 		game_over_sign = new Texture("game_over.png");
 
@@ -84,7 +85,8 @@ public class TetrisGame extends ApplicationAdapter {
 		upcoming_blocks = new ArrayList<>();
 		generate_upcoming_blocks();
 		generate_upcoming_blocks();
-		font = new BitmapFont();
+		next_piece_font = new BitmapFont();
+		saved_piece_font = new BitmapFont();
 
 		//initializing currently held tetris piece
 		spawn_piece();
@@ -163,7 +165,23 @@ public class TetrisGame extends ApplicationAdapter {
 		}
 	}
 
+	private boolean save_piece(){
+		if(saved_piece == null){
+			saved_piece = current_piece.color;
+			current_piece.delete_piece();
+			return spawn_piece();
+		}
+		else{
+			Color temp = saved_piece;
+			saved_piece = current_piece.color;
+			current_piece.delete_piece();
+			current_piece = Piece.create_piece(new int[]{2,4}, temp, board);
+			return current_piece != null;
+		}
+	}
+
 	public void handle_user_input() throws Exception{
+		//TODO: HANDLE SHIFT PRESSES
 		if(game_over){
 			if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
 				game_over = false;
@@ -214,6 +232,13 @@ public class TetrisGame extends ApplicationAdapter {
 		}
 		else if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){// Clockwise
 			current_piece.rotate_clockwise();
+		}
+		else if(Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.SHIFT_RIGHT)){
+			boolean temp = save_piece();
+			if(!temp){
+				game_over = true;
+			}
+			time_passed = 0;
 		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
@@ -286,44 +311,62 @@ public class TetrisGame extends ApplicationAdapter {
 							temp = purple_block;
 					}
 					Sprite filler = new Sprite(temp);
-					filler.setPosition(x_padding + j*block_size, y_padding + (rows-1-i) * block_size);
+					filler.setPosition(x_padding * 2 + visible_piece_size + j*block_size, y_padding + (rows-1-i) * block_size);
 					filler.draw(batch);
 				}
 			}
 		}
 		for(int i = 0; i < upcoming_blocks.size() && i <= upcoming_blocks_visible_length; i++){
 			Color color = upcoming_blocks.get(i);
-			Texture temp = red_piece;
-			switch(color){
-				case BLUE:
-					temp = blue_piece;
-					break;
-				case GREEN:
-					temp = green_piece;
-					break;
-				case ORANGE:
-					temp = orange_piece;
-					break;
-				case YELLOW:
-					temp = yellow_piece;
-					break;
-				case LIGHT_BLUE:
-					temp = light_blue_piece;
-					break;
-				case PURPLE:
-					temp = purple_piece;
-			}
+			Texture temp = get_block_from_color(color);
 			Sprite upcoming_block = new Sprite(temp);
-			upcoming_block.setSize(120, 120);
-			upcoming_block.setPosition(x_padding * 2 + cols * block_size, y_padding + (upcoming_blocks_visible_length - i) * 120);
+			upcoming_block.setSize(visible_piece_size, visible_piece_size);
+			upcoming_block.setPosition(x_padding * 3 + visible_piece_size + cols * block_size,
+					y_padding + (upcoming_blocks_visible_length - i) * visible_piece_size);
 			upcoming_block.draw(batch);
 		}
-		font.draw(batch, "Next Pieces", x_padding * 3 + cols * block_size, y_padding + upcoming_blocks_visible_length * 120 + 150);
+		next_piece_font.draw(batch, "Next Pieces", x_padding * 4 + visible_piece_size + cols * block_size,
+				y_padding + upcoming_blocks_visible_length * visible_piece_size + 150);
+
+
+		if(saved_piece != null){
+			Texture temp_texture = get_block_from_color(saved_piece);
+			Sprite temp_sprite = new Sprite(temp_texture);
+			temp_sprite.setSize(visible_piece_size, visible_piece_size);
+			temp_sprite.setPosition(x_padding, y_padding + upcoming_blocks_visible_length * visible_piece_size);
+			temp_sprite.draw(batch);
+		}
+		saved_piece_font.draw(batch, "Saved Piece", x_padding * 2,
+				y_padding + upcoming_blocks_visible_length * visible_piece_size + 150);
 
 		if(game_over){
 			new Sprite(game_over_sign).draw(batch);
 		}
 		batch.end();
+	}
+
+	private Texture get_block_from_color(Color color){
+		Texture temp = red_piece;
+		switch(color){
+			case BLUE:
+				temp = blue_piece;
+				break;
+			case GREEN:
+				temp = green_piece;
+				break;
+			case ORANGE:
+				temp = orange_piece;
+				break;
+			case YELLOW:
+				temp = yellow_piece;
+				break;
+			case LIGHT_BLUE:
+				temp = light_blue_piece;
+				break;
+			case PURPLE:
+				temp = purple_piece;
+		}
+		return temp;
 	}
 	
 	@Override
@@ -345,6 +388,7 @@ public class TetrisGame extends ApplicationAdapter {
 		yellow_piece.dispose();
 		light_blue_piece.dispose();
 		purple_piece.dispose();
-		font.dispose();
+		next_piece_font.dispose();
+		saved_piece_font.dispose();
 	}
 }
