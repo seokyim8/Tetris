@@ -214,4 +214,16 @@ public class Piece {
     public void delete_piece(){
         remove_grid();
     }
+
+    public boolean is_touching_ground(){
+        remove_grid();
+        for(int[] part: parts){
+            if(!can_exist_here(board, location[0] + part[0]+1, location[1] + part[1])){
+                fill_grid();
+                return true;
+            }
+        }
+        fill_grid();
+        return false;
+    }
 }

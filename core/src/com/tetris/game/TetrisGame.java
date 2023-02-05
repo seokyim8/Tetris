@@ -269,6 +269,10 @@ public class TetrisGame extends ApplicationAdapter {
 				}
 				time_passed = 0;
 				press_timer -= 3;
+				if(current_piece.is_touching_ground()){
+					System.out.println(current_piece.is_touching_ground());
+					press_timer -= 9;
+				}
 			}
 		}
 	}
