@@ -3,6 +3,7 @@ package com.tetris.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -42,6 +43,7 @@ public class GameScreen extends ScreenAdapter {
     Texture yellow_piece;
     Texture light_blue_piece;
     Texture purple_piece;
+    Sound dink_sound;
     int time_passed;
     int press_timer;
     int total_time_passed;
@@ -82,6 +84,9 @@ public class GameScreen extends ScreenAdapter {
         yellow_piece = new Texture("yellow_piece.png");
         light_blue_piece = new Texture("light_blue_piece.png");
         purple_piece = new Texture("purple_piece.png");
+
+        //initialize sound of tetris piece dropping
+        dink_sound = Gdx.audio.newSound(Gdx.files.internal("drop_sound.wav"));
 
         //initializing tetris board
         board = new Grid[rows][cols];
@@ -232,6 +237,7 @@ public class GameScreen extends ScreenAdapter {
             if(!spawn_piece()){
                 game_over = true;
             }
+            dink_sound.play();
             time_passed = 0;
             press_timer = 0;
         }
@@ -409,5 +415,6 @@ public class GameScreen extends ScreenAdapter {
         purple_piece.dispose();
         next_piece_font.dispose();
         saved_piece_font.dispose();
+        dink_sound.dispose();
     }
 }
