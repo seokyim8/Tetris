@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -68,10 +69,12 @@ public class TitleScreen extends ScreenAdapter {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 int x = Gdx.input.getX();
-                int y = Gdx.input.getY();//FOR THE TOUCH, SCREEN ORIGIN IS TOP LEFT CORNER!! DIFFERENT FROM LIBGDX ORIGIN, WHICH IS BOTTOM LEFT
+                int y = Gdx.input.getY();// SCREEN ORIGIN IS TOP LEFT CORNER!! DIFFERENT FROM LIBGDX ORIGIN, WHICH IS BOTTOM LEFT
 
                 if(x >= button_to_location.get("to_game_screen")[0] && x <= button_to_location.get("to_game_screen")[0] + button_width
                 && y >= button_to_location.get("to_game_screen")[1] - button_height&& y <= button_to_location.get("to_game_screen")[1]){
+                    //NEED TO CALL DISPOSE BEFORE SETTING TO A NEW SCREEN
+                    dispose();
                     tetris_game.setScreen(new GameScreen(tetris_game));
                 }
                 return true;
@@ -102,6 +105,7 @@ public class TitleScreen extends ScreenAdapter {
     @Override
     public void render(float dt){
         Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tetris_game.batch.begin();
         title.draw(tetris_game.batch, title_string, Gdx.graphics.getWidth() /2 - gl.width/2,
                 Gdx.graphics.getHeight() - gl.height * 6);//centering title font

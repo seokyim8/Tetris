@@ -192,6 +192,11 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void handle_user_input() throws Exception{
+        if (Gdx.input.isKeyPressed(Input.Keys.BACKSPACE)) {
+            dispose();
+            tetris_game.setScreen(new TitleScreen(tetris_game));
+        }
+
         if(game_over){
             if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
                 game_over = false;
@@ -396,7 +401,6 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void dispose () {
-        tetris_game.batch.dispose();
         container_texture.dispose();
         red_block.dispose();
         blue_block.dispose();
