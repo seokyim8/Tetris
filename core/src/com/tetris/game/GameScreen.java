@@ -283,7 +283,7 @@ public class GameScreen extends ScreenAdapter {
                 press_timer -= 3;
                 if(current_piece.is_touching_ground()){
                     System.out.println(current_piece.is_touching_ground());
-                    press_timer -= 9;
+                    press_timer -= 18;
                 }
             }
         }
