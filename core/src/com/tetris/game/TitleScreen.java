@@ -43,7 +43,7 @@ public class TitleScreen extends ScreenAdapter {
 
         button_to_location = new Hashtable<>();
         button_to_location.put("to_game_screen", new int[]{Gdx.graphics.getWidth() /2 - button_width/2, Gdx.graphics.getHeight()/2});
-        button_to_location.put("to_room_listing", new int[]{Gdx.graphics.getWidth() /2 -button_width/2, Gdx.graphics.getHeight()/4});
+        button_to_location.put("to_room_listing", new int[]{Gdx.graphics.getWidth() /2 -button_width/2, Gdx.graphics.getHeight()/4});// this is for the sprite's location, not the input touch
         to_room_listing_screen.setSize(button_width,button_height);
         to_game_screen.setSize(button_width, button_height);
         to_room_listing_screen.setPosition(button_to_location.get("to_room_listing")[0], button_to_location.get("to_room_listing")[1]);
@@ -72,10 +72,16 @@ public class TitleScreen extends ScreenAdapter {
                 int y = Gdx.input.getY();// SCREEN ORIGIN IS TOP LEFT CORNER!! DIFFERENT FROM LIBGDX ORIGIN, WHICH IS BOTTOM LEFT
 
                 if(x >= button_to_location.get("to_game_screen")[0] && x <= button_to_location.get("to_game_screen")[0] + button_width
-                && y >= button_to_location.get("to_game_screen")[1] - button_height&& y <= button_to_location.get("to_game_screen")[1]){
+                && y >= button_to_location.get("to_game_screen")[1] - button_height && y <= button_to_location.get("to_game_screen")[1]){
                     //NEED TO CALL DISPOSE BEFORE SETTING TO A NEW SCREEN
                     dispose();
                     tetris_game.setScreen(new GameScreen(tetris_game));
+                }
+                if(x >= button_to_location.get("to_room_listing")[0] && x <= button_to_location.get("to_room_listing")[0] + button_width
+                        && y <= Gdx.graphics.getHeight() - button_to_location.get("to_room_listing")[1] &&
+                        y >= Gdx.graphics.getHeight() - button_to_location.get("to_room_listing")[1] - button_height){
+                    dispose();
+                    tetris_game.setScreen(new RoomListingScreen(tetris_game));
                 }
                 return true;
             }
