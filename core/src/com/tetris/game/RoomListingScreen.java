@@ -13,10 +13,13 @@ public class RoomListingScreen extends ScreenAdapter {
     TetrisGame tetris_game;
     Texture room_listing_page_texture;
     Sprite room_listing_page;
+    Texture create_room_texture;
+    Sprite create_room;
     final static int x_padding = 20;
     final static int y_padding = 20;
     Hashtable<String, int[]> button_locations;
     Hashtable<String, int[]> button_dimensions;
+
 
     public RoomListingScreen(TetrisGame tetris_game){
         this.tetris_game = tetris_game;
@@ -24,16 +27,24 @@ public class RoomListingScreen extends ScreenAdapter {
 
     @Override
     public void show(){
+        //initializing textures and sprites
         room_listing_page_texture = new Texture("room_listing_page.png");
         room_listing_page = new Sprite(room_listing_page_texture);
+        create_room_texture = new Texture("create_room.png");
+        create_room = new Sprite(create_room_texture);
+
+        //initializing Hashtables
+        //the locations here are locations regarding the input location, meaning the origin is top left corner, not bottom right
         button_locations = new Hashtable<>();
         button_locations.put("to_title_screen", new int[]{40, 865});
         button_locations.put("left_arrow", new int[]{185, 785});
         button_locations.put("right_arrow", new int[]{501, 785});
+        button_locations.put("create_room", new int[]{315, 865});
         button_dimensions = new Hashtable<>();
         button_dimensions.put("to_title_screen", new int[]{162, 58});
         button_dimensions.put("left_arrow", new int[]{62, 32});
         button_dimensions.put("right_arrow", new int[]{62, 32});
+        button_dimensions.put("create_room", new int[]{160, 60});
 
         Gdx.input.setInputProcessor(new InputProcessor() {
             @Override
@@ -61,6 +72,12 @@ public class RoomListingScreen extends ScreenAdapter {
                 y >= to_title_screen[0][1] - to_title_screen[1][1] && y <= to_title_screen[0][1]){
                     dispose();
                     tetris_game.setScreen(new TitleScreen(tetris_game));
+                }
+
+                int[][] create_room = new int[][]{button_locations.get("create_room"), button_dimensions.get("create_room")};
+                if(x >= create_room[0][0] && x <= create_room[0][0] + create_room[1][0] &&
+                y >= create_room[0][1] - create_room[1][1] && y <= create_room[0][1]){
+                    System.out.println("CREATE ROOM");
                 }
 
                 return false;
@@ -95,12 +112,15 @@ public class RoomListingScreen extends ScreenAdapter {
         tetris_game.batch.begin();
         room_listing_page.setPosition(x_padding,y_padding);
         room_listing_page.draw(tetris_game.batch);
+        create_room.setPosition(button_locations.get("create_room")[0], Gdx.graphics.getHeight() - button_locations.get("create_room")[1]);
+        create_room.draw(tetris_game.batch);
         tetris_game.batch.end();
     }
 
     @Override
     public void dispose(){
         room_listing_page_texture.dispose();
+        create_room_texture.dispose();
     }
 
 }
