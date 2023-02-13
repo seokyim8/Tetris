@@ -19,14 +19,25 @@ import java.util.Collections;
 import java.util.List;
 
 public class TetrisGame extends Game {
+	//TODO: WE NEED TO KEEP THE INSTANCES OF SCREENS BECAUSE WHEN SETTING TO A NEW SCREEN THE PREVIOUS SCREEN INSTANCE DOES NOT GO AWAY BY ITSELF
 	SpriteBatch batch;
 	ShapeRenderer shapeRenderer;
+
+	TitleScreen titleScreen;
+	GameScreen gameScreen;
+	RoomListingScreen roomListingScreen;
+	MultiPlayerGameScreen multiPlayerGameScreen;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
-		setScreen(new TitleScreen(this));
+		titleScreen = new TitleScreen(this);
+		gameScreen = new GameScreen(this);
+		roomListingScreen = new RoomListingScreen(this);
+		multiPlayerGameScreen = new MultiPlayerGameScreen(this);
+
+		setScreen(titleScreen);
 	}
 
 	@Override

@@ -7,7 +7,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import java.net.URISyntaxException;
 import java.util.Hashtable;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class RoomListingScreen extends ScreenAdapter {
     TetrisGame tetris_game;
@@ -19,6 +24,7 @@ public class RoomListingScreen extends ScreenAdapter {
     final static int y_padding = 20;
     Hashtable<String, int[]> button_locations;
     Hashtable<String, int[]> button_dimensions;
+    Socket socket;
 
 
     public RoomListingScreen(TetrisGame tetris_game){
@@ -46,6 +52,7 @@ public class RoomListingScreen extends ScreenAdapter {
         button_dimensions.put("right_arrow", new int[]{62, 32});
         button_dimensions.put("create_room", new int[]{160, 60});
 
+        config_socket();
         Gdx.input.setInputProcessor(new InputProcessor() {
             @Override
             public boolean keyDown(int keycode) {
@@ -70,8 +77,7 @@ public class RoomListingScreen extends ScreenAdapter {
                 int[][] to_title_screen = new int[][]{button_locations.get("to_title_screen"), button_dimensions.get("to_title_screen")};
                 if(x >= to_title_screen[0][0] && x <= to_title_screen[0][0] + to_title_screen[1][0] &&
                 y >= to_title_screen[0][1] - to_title_screen[1][1] && y <= to_title_screen[0][1]){
-                    dispose();
-                    tetris_game.setScreen(new TitleScreen(tetris_game));
+                    tetris_game.setScreen(tetris_game.titleScreen);
                 }
 
                 int[][] create_room = new int[][]{button_locations.get("create_room"), button_dimensions.get("create_room")};
@@ -105,6 +111,31 @@ public class RoomListingScreen extends ScreenAdapter {
         });
     }
 
+    private void config_socket(){
+        //creating socket for connecting to server
+        try {
+            socket = IO.socket("http://localhost:8080");
+            socket.connect();
+        } catch (URISyntaxException e) {
+            System.out.println("Socket creation failed for connecting to the server, returning to title screen. " +
+                    "Refer to the following error message.");
+            System.out.println(e);
+            tetris_game.setScreen(tetris_game.titleScreen);
+        }
+
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                System.out.println("Successfully connected to server.");
+            }
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                System.out.println("Server connection lost. Reattempting connection.");
+            }
+        });
+    }
+
     @Override
     public void render(float dt){
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -119,8 +150,16 @@ public class RoomListingScreen extends ScreenAdapter {
 
     @Override
     public void dispose(){
+        if(socket != null){
+            socket.off();
+            socket.close();
+        }
         room_listing_page_texture.dispose();
         create_room_texture.dispose();
     }
 
+    @Override
+    public void hide(){
+        dispose();
+    }
 }

@@ -73,15 +73,12 @@ public class TitleScreen extends ScreenAdapter {
 
                 if(x >= button_to_location.get("to_game_screen")[0] && x <= button_to_location.get("to_game_screen")[0] + button_width
                 && y >= button_to_location.get("to_game_screen")[1] - button_height && y <= button_to_location.get("to_game_screen")[1]){
-                    //NEED TO CALL DISPOSE BEFORE SETTING TO A NEW SCREEN
-                    dispose();
-                    tetris_game.setScreen(new GameScreen(tetris_game));
+                    tetris_game.setScreen(tetris_game.gameScreen);
                 }
                 if(x >= button_to_location.get("to_room_listing")[0] && x <= button_to_location.get("to_room_listing")[0] + button_width
                         && y <= Gdx.graphics.getHeight() - button_to_location.get("to_room_listing")[1] &&
                         y >= Gdx.graphics.getHeight() - button_to_location.get("to_room_listing")[1] - button_height){
-                    dispose();
-                    tetris_game.setScreen(new RoomListingScreen(tetris_game));
+                    tetris_game.setScreen(tetris_game.roomListingScreen);
                 }
                 return true;
             }
@@ -130,5 +127,6 @@ public class TitleScreen extends ScreenAdapter {
     @Override
     public void hide(){
         Gdx.input.setInputProcessor(null);
+        dispose();
     }
 }
