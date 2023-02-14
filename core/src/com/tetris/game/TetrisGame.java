@@ -44,5 +44,8 @@ public class TetrisGame extends Game {
 	public void dispose () {
 		batch.dispose();
 		shapeRenderer.dispose();
+		if(roomListingScreen != null && roomListingScreen.socket != null){
+			roomListingScreen.socket.close();
+		}
 	}
 }

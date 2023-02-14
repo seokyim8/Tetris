@@ -7,8 +7,17 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -25,6 +34,25 @@ public class RoomListingScreen extends ScreenAdapter {
     Hashtable<String, int[]> button_locations;
     Hashtable<String, int[]> button_dimensions;
     Socket socket;
+    Hashtable<String,Room> room_list;
+
+    class Room{
+        String id;
+        String title;
+        String player_id;
+        List<String> players;
+        boolean is_playing;
+        public Room(String id, String title, List<String> players){
+            this.id = id;
+            this.title = title;
+            this.players = players;
+            this.is_playing = false;
+        }
+        @Override
+        public String toString(){
+            return "Room id: " + this.id  + ", title: " + this.title;
+        }
+    }
 
 
     public RoomListingScreen(TetrisGame tetris_game){
@@ -51,6 +79,8 @@ public class RoomListingScreen extends ScreenAdapter {
         button_dimensions.put("left_arrow", new int[]{62, 32});
         button_dimensions.put("right_arrow", new int[]{62, 32});
         button_dimensions.put("create_room", new int[]{160, 60});
+
+        room_list = new Hashtable<>();
 
         config_socket();
         Gdx.input.setInputProcessor(new InputProcessor() {
@@ -83,7 +113,8 @@ public class RoomListingScreen extends ScreenAdapter {
                 int[][] create_room = new int[][]{button_locations.get("create_room"), button_dimensions.get("create_room")};
                 if(x >= create_room[0][0] && x <= create_room[0][0] + create_room[1][0] &&
                 y >= create_room[0][1] - create_room[1][1] && y <= create_room[0][1]){
-                    System.out.println("CREATE ROOM");
+                    //TODO: CREATE ROOM FUNCTIONALITY
+                    socket.emit("create_room", "ROOM NAME NOT SPECIFIED");
                 }
 
                 return false;
@@ -132,6 +163,33 @@ public class RoomListingScreen extends ScreenAdapter {
             @Override
             public void call(Object... args) {
                 System.out.println("Server connection lost. Reattempting connection.");
+            }
+        }).on("created_room", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject info = (JSONObject)args[0];
+                try {
+                    JSONObject temp = info.getJSONObject("room_list");
+                    room_list = new Hashtable<>();
+                    Iterator iterator = temp.keys();
+                    while(iterator.hasNext()){
+                        String key = (String)iterator.next();
+                        List<String> players = new ArrayList<>();
+                        JSONObject room_info = temp.getJSONObject(key);
+                        for(int i = 0; i < room_info.getJSONArray("players").length(); i++){
+                            players.add(room_info.getJSONArray("players").get(i).toString());
+                        }
+                        room_list.put(key, new Room(key,room_info.getString("title"), players));
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                //debugging
+                for(String key: room_list.keySet()){
+                    System.out.println(room_list.get(key));
+                }
+                //
             }
         });
     }
