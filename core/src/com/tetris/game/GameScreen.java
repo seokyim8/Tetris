@@ -210,6 +210,7 @@ public class GameScreen extends ScreenAdapter {
                 upcoming_blocks = new ArrayList<>();
                 generate_upcoming_blocks();
                 generate_upcoming_blocks();
+                saved_piece = null;
                 spawn_piece();
             }
             return;
@@ -422,6 +423,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void hide(){
+        saved_piece = null;
         dispose();
     }
 }
