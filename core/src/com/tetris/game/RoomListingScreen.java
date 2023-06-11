@@ -29,6 +29,8 @@ public class RoomListingScreen extends ScreenAdapter {
     Sprite room_listing_page;
     Texture create_room_texture;
     Sprite create_room;
+    Texture refresh_room_listing_texture;
+    Sprite refresh_room_listing;
     final static int x_padding = 20;
     final static int y_padding = 20;
     Hashtable<String, int[]> button_locations;
@@ -66,6 +68,11 @@ public class RoomListingScreen extends ScreenAdapter {
         room_listing_page = new Sprite(room_listing_page_texture);
         create_room_texture = new Texture("create_room.png");
         create_room = new Sprite(create_room_texture);
+        //TODO:
+        refresh_room_listing_texture = new Texture("");
+        refresh_room_listing = new Sprite(refresh_room_listing_texture);
+        //
+
 
         //initializing Hashtables
         //the locations here are locations regarding the input location, meaning the origin is top left corner, not bottom right
@@ -74,11 +81,13 @@ public class RoomListingScreen extends ScreenAdapter {
         button_locations.put("left_arrow", new int[]{185, 785});
         button_locations.put("right_arrow", new int[]{501, 785});
         button_locations.put("create_room", new int[]{315, 865});
+        button_locations.put("refresh", new int[]{0,0});//TODO:
         button_dimensions = new Hashtable<>();
         button_dimensions.put("to_title_screen", new int[]{162, 58});
         button_dimensions.put("left_arrow", new int[]{62, 32});
         button_dimensions.put("right_arrow", new int[]{62, 32});
         button_dimensions.put("create_room", new int[]{160, 60});
+        button_dimensions.put("refresh", new int[]{0,0});//TODO:
 
         room_list = new Hashtable<>();
 
@@ -108,6 +117,7 @@ public class RoomListingScreen extends ScreenAdapter {
                 if(x >= to_title_screen[0][0] && x <= to_title_screen[0][0] + to_title_screen[1][0] &&
                 y >= to_title_screen[0][1] - to_title_screen[1][1] && y <= to_title_screen[0][1]){
                     tetris_game.setScreen(tetris_game.titleScreen);
+                    close_socket();
                 }
 
                 int[][] create_room = new int[][]{button_locations.get("create_room"), button_dimensions.get("create_room")};
@@ -116,6 +126,8 @@ public class RoomListingScreen extends ScreenAdapter {
                     //TODO: CREATE ROOM FUNCTIONALITY
                     socket.emit("create_room", "ROOM NAME NOT SPECIFIED");
                 }
+
+                int[][] refresh = new int[][]{}; //TODO:
 
                 return false;
             }
@@ -152,6 +164,7 @@ public class RoomListingScreen extends ScreenAdapter {
                     "Refer to the following error message.");
             System.out.println(e);
             tetris_game.setScreen(tetris_game.titleScreen);
+            close_socket();
         }
 
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -169,6 +182,32 @@ public class RoomListingScreen extends ScreenAdapter {
             public void call(Object... args) {
                 JSONObject info = (JSONObject)args[0];
                 try {
+                    //update room_list
+                    JSONObject temp = info.getJSONObject("room_list");
+                    room_list = new Hashtable<>();
+                    Iterator iterator = temp.keys();
+                    while(iterator.hasNext()){
+                        String key = (String)iterator.next();
+                        List<String> players = new ArrayList<>();
+                        JSONObject room_info = temp.getJSONObject(key);
+                        for(int i = 0; i < room_info.getJSONArray("players").length(); i++){
+                            players.add(room_info.getJSONArray("players").get(i).toString());
+                        }
+                        room_list.put(key, new Room(key,room_info.getString("title"), players));
+                    }
+
+                    //set screen to LobbyScreen (need to keep socket open for connection)
+                    tetris_game.setScreen(tetris_game.lobbyScreen);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).on("get_room_list", new Emitter.Listener(){
+            @Override
+            public void call(Object... args) {
+                JSONObject info = (JSONObject)args[0];
+                try {
+                    //update room_list
                     JSONObject temp = info.getJSONObject("room_list");
                     room_list = new Hashtable<>();
                     Iterator iterator = temp.keys();
@@ -184,12 +223,6 @@ public class RoomListingScreen extends ScreenAdapter {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-
-                //debugging
-                for(String key: room_list.keySet()){
-                    System.out.println(room_list.get(key));
-                }
-                //
             }
         });
     }
@@ -206,12 +239,15 @@ public class RoomListingScreen extends ScreenAdapter {
         tetris_game.batch.end();
     }
 
-    @Override
-    public void dispose(){
+    public void close_socket(){
         if(socket != null){
             socket.off();
             socket.close();
         }
+    }
+
+    @Override
+    public void dispose(){
         room_listing_page_texture.dispose();
         create_room_texture.dispose();
     }

@@ -27,6 +27,7 @@ public class TetrisGame extends Game {
 	GameScreen gameScreen;
 	RoomListingScreen roomListingScreen;
 	MultiPlayerGameScreen multiPlayerGameScreen;
+	LobbyScreen lobbyScreen;
 
 	@Override
 	public void create () {
@@ -36,6 +37,7 @@ public class TetrisGame extends Game {
 		gameScreen = new GameScreen(this);
 		roomListingScreen = new RoomListingScreen(this);
 		multiPlayerGameScreen = new MultiPlayerGameScreen(this);
+		lobbyScreen = new LobbyScreen(this);
 
 		setScreen(titleScreen);
 	}
