@@ -112,7 +112,7 @@ class Tetris:
             self.current_piece = temp_piece
             return True
         
-    def process_input(self, response):
+    def process_input(self, response): # Function for testing playability
         if response == 'd':
             if not self.current_piece.move_down():
                 self.tetriminos += 1
@@ -139,6 +139,9 @@ class Tetris:
             print(self.overall_height_disparity())
         elif response == "states":
             print(self.get_next_states())
+        elif response == "action":
+            temp_input = input("please entre x i:  ")
+            self.take_action([int(x) for x in temp_input.split(" ")])
         
         self.render()
 
@@ -274,7 +277,7 @@ class Tetris:
 
         return action_to_state
 
-    # DEBUGGING FUNCTION
+    # Function for Debugging
     def print_board(self):
         for x in range(Tetris.cols):
             temp = ""
@@ -283,9 +286,35 @@ class Tetris:
             print(temp)
     #
 
-    def take_action(self):
-        # TODO: FINISH
-        return
+    def take_action(self, action): # action is expected to be of form [x_location, rotation_number]
+        # Moving piece to instructed position
+        for _ in range(action[1]):
+            self.current_piece.rotate_clockwise()
+        for _ in range(10):
+            self.current_piece.move_left()
+        for _ in range(action[0]):
+            self.current_piece.move_right()
+        for _ in range(22):
+            self.current_piece.move_down()
+        
+        self.tetriminos += 1
+
+        # Processing board status and reward
+        prev_cleared_lines = self.cleared_lines
+        self.clear_possible_lines()
+        lines = self.cleared_lines - prev_cleared_lines
+
+        # Score is the to-be-returned reward value
+        temp_score = Tetris.rows * (lines ** 2) + 2 # TODO: Arbitrary values for now
+        self.score += temp_score
+
+        if not self.spawn_piece():
+            self.game_over = True
+        
+        if self.game_over:
+            temp_score -= 5
+
+        return temp_score, self.game_over
     
     def get_all_States(self): # Whichever function that takes this return value should convert it(wrap it with) to a pytorch tensor
         return [self.cleared_lines, self.blanks(), self.overall_height_disparity(), self.max_height()]
