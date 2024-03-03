@@ -115,6 +115,7 @@ class Tetris:
     def process_input(self, response):
         if response == 'd':
             if not self.current_piece.move_down():
+                self.tetriminos += 1
                 self.clear_possible_lines()
                 if not self.spawn_piece():
                     self.game_over = True
@@ -224,17 +225,15 @@ class Tetris:
     def blanks(self):
         # If there are occupied grid cells above an empty cell, then that is a blank/hole
         total_sum = 0
-        empty = False
-        temp_sum = 0
         for i in range(Tetris.rows):
-            for j in range(20,-1,-1):
-                if empty:
-                    empty = True
+            temp_sum = 0
+            for j in range(Tetris.cols-1,-1,-1):
+                if self.board[j][i] == None:
                     temp_sum += 1
                 else:
-                    empty = False
                     total_sum += temp_sum
                     temp_sum = 0
+                    
         return total_sum
     
     def overall_height_disparity(self):
@@ -336,7 +335,7 @@ class Piece:
     def rotate_clockwise(self):
         self.remove_grid()
         if not self.can_rotate_clockwise():
-            self.filld_grid()
+            self.fill_grid()
             return False
         
         for part in self.parts:
