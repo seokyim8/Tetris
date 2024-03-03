@@ -25,7 +25,7 @@ class Tetris:
         self.block_size = 15
         self.board = [[None] * Tetris.rows for _ in range(Tetris.cols)]
         self.upcoming_blocks = []
-        self.saved_peice = None
+        self.saved_peice = None # IS A COLOR BTW; A COLOR IS SAVED TO INDICATE THE TYPE OF BLOCK
         self.current_piece = None
         self.generate_upcoming_blocks()
         self.generate_upcoming_blocks()
@@ -105,8 +105,12 @@ class Tetris:
             temp = self.saved_peice
             self.saved_peice = self.current_piece.color
             self.current_piece.delete_piece()
-            self.current_piece = Piece([2,4], temp, self.board)
-            return self.current_piece != None
+            temp_piece = Piece([2,4], temp, self.board)
+            if not temp_piece.verified_piece():
+                return False
+        
+            self.current_piece = temp_piece
+            return True
         
     def process_input(self, response):
         if response == 'd':
@@ -205,15 +209,19 @@ class Tetris:
     def get_next_states():
         # TODO: FINISH
         return
+    
     def take_action():
         # TODO: FINISH
         return
+    
     def well_count():
         # TODO: FINISH
         return
+    
     def overall_height_disparity():
         # TODO: FINISH
         return
+    
     def max_height():
         # TODO: FINISH
         return
