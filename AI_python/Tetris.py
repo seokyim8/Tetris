@@ -7,11 +7,12 @@ import random
 from enum import Enum
 import cv2
 from PIL import Image
+from matplotlib import style
 
 
 class Tetris:
-    rows = 22
-    cols = 10
+    rows = 10
+    cols = 22
     upcoming_blocks_visible_length = 6
     block_size = 20
     visible_piece_size = 120
@@ -30,6 +31,7 @@ class Tetris:
         self.generate_upcoming_blocks()
         self.spawn_piece()
         self.game_over = False
+        self.tetriminos = 0
 
         # Used for game screen rendering
         self.additional_board = np.ones((self.cols * self.block_size, self.rows * int(self.block_size / 2), 3), dtype=np.uint8) * np.array([204, 204, 255], dtype=np.uint8)
@@ -45,13 +47,14 @@ class Tetris:
         self.upcoming_blocks.extend(temp)
 
     def spawn_piece(self):
-        self.current_piece = Piece([2,4], self.upcoming_blocks.pop(0), self.board)
-        if self.current_piece == None:
+        temp_piece = Piece([2,4], self.upcoming_blocks.pop(0), self.board)
+        if not temp_piece.verified_piece():
             return False
         
         if len(self.upcoming_blocks) < 7:
             self.generate_upcoming_blocks()
 
+        self.current_piece = temp_piece
         return True
     
     def update_board(self):
@@ -61,7 +64,7 @@ class Tetris:
     def clear_possible_lines(self):
         for i in range(Tetris.rows):
             gap_exists = False
-            for j in Tetris.cols:
+            for j in range(Tetris.cols):
                 if self.board[i][j] == None:
                     gap_exists = True
                     break
@@ -95,13 +98,29 @@ class Tetris:
         
     def process_input(self, response):
         if response == 'd':
+            if not self.current_piece.move_down():
+                self.clear_possible_lines()
+                if not self.spawn_piece():
+                    self.game_over = True
+        elif response == 'l':
             self.current_piece.move_left()
+        elif response == 'r':
+            self.current_piece.move_right()
+        elif response == 'rc':
+            self.current_piece.rotate_clockwise()
+        elif response == 'rcc':
+            self.current_piece.rotate_counterclockwise()
+        elif response == 's':
+            temp = self.save_piece()
+            if not temp:
+                self.game_over = True
+        
         self.render()
 
     def to_RGB(self, color):
         match color:
             case Color.RED:
-                return (0, 0, 255)
+                return (254, 151, 32)
             case Color.BLUE:
                 return (255, 255, 0)
             case Color.ORANGE:
@@ -112,14 +131,18 @@ class Tetris:
                 return (255, 0, 0)
             case Color.LIGHT_BLUE:
                 return (102, 217, 238)
-            case _:
-                return (254, 151, 32)
+            case Color.PURPLE:
+                return (0, 0, 255)
+            case None:
+                return (0,0,0)
 
     def render(self, video=None):
-        if self.gameover == False:
+        if self.game_over == False:
             img = [self.to_RGB(p) for row in self.board for p in row]
         else:
             img = [self.to_RGB(p) for row in self.board for p in row]
+        
+
         img = np.array(img).reshape((self.cols, self.rows, 3)).astype(np.uint8)
         img = img[..., ::-1]
         img = Image.fromarray(img, "RGB")
@@ -134,22 +157,22 @@ class Tetris:
 
 
         cv2.putText(img, "Score:", (self.rows * self.block_size + int(self.block_size / 2), self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
         cv2.putText(img, str(self.score),
                     (self.rows * self.block_size + int(self.block_size / 2), 2 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
 
         cv2.putText(img, "Pieces:", (self.rows * self.block_size + int(self.block_size / 2), 4 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
-        cv2.putText(img, str(self.tetrominoes),
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
+        cv2.putText(img, str(self.tetriminos),
                     (self.rows * self.block_size + int(self.block_size / 2), 5 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
 
         cv2.putText(img, "Lines:", (self.rows * self.block_size + int(self.block_size / 2), 7 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
         cv2.putText(img, str(self.cleared_lines),
                     (self.rows * self.block_size + int(self.block_size / 2), 8 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
 
         if video:
             video.write(img)
@@ -167,7 +190,9 @@ class Tetris:
         self.upcoming_blocks = []
         self.generate_upcoming_blocks()
         self.generate_upcoming_blocks()
+        self.spawn_piece()
         self.game_over = False
+        self.tetriminos = 0
 
 
 
@@ -176,6 +201,7 @@ class Tetris:
         
 
 class Color(Enum):
+    
     RED = 1
     BLUE = 2
     GREEN = 3
@@ -196,7 +222,6 @@ class Piece:
         self.color = color
         self.board = board
         self.parts = self.get_parts(color)
-        self.fill_grid()
 
     def get_parts(self, color):
         match color:
@@ -216,20 +241,19 @@ class Piece:
                 return [[1,0],[0,1],[0,-1],[0,0]]
 
 
-    # USELESS FUNCTION
-    def create_piece(self, location, color, board):
-        parts = self.get_parts(color)
+    def verified_piece(self):
+        parts = self.get_parts(self.color)
         for part in parts:
-            x = location[0] + part[0]
-            y = location[1] + part[1]
-            if self.can_exist_here(board,x,y):
-                return None
-        return Piece(location, color, board)
-    # ENDS HERE
+            x = self.location[0] + part[0]
+            y = self.location[1] + part[1]
+            if not self.can_exist_here(self.board,x,y):
+                return False
+        self.fill_grid()
+        return True
 
 
-    def can_exist_here(board, x, y):
-        if x < 0 or x >= Tetris.rows or y < 0 or y >= Tetris.cols or board[x][y] != None: # TODO: CHECK THIS CONDITION AGAIN
+    def can_exist_here(self, board, x, y):
+        if x < 0 or x >= Tetris.cols or y < 0 or y >= Tetris.rows or board[x][y] != None: # TODO: CHECK THIS CONDITION AGAIN
             return False
         return True
 
@@ -243,7 +267,7 @@ class Piece:
             new_x = y
             new_y = -1 * x
 
-            if self.can_exist_here(self.board, self.location[0], + new_x, self.location[1] + new_y):
+            if not self.can_exist_here(self.board, self.location[0] + new_x, self.location[1] + new_y):
                 return False
  
         return True
@@ -266,8 +290,8 @@ class Piece:
         for part in self.parts:
             new_x = -1
             new_y = -1
-            x = self.part[0]
-            y = self.part[1]
+            x = part[0]
+            y = part[1]
 
             new_x = -1 * y
             new_y = x
@@ -275,6 +299,8 @@ class Piece:
             if not self.can_exist_here(self.board, self.location[0] + new_x, self.location[1] + new_y):
                 return False
 
+        return True
+    
     def rotate_counterclockwise(self):
         self.remove_grid()
         if not self.can_rotate_counterclockwise():
@@ -304,7 +330,7 @@ class Piece:
         for i in range(len(self.parts)):
             x = self.parts[i][0] + 1
             y = self.parts[i][1]
-            if not self.can_exist_here(self.board, self.location[0] + x, self.lcoation[1] + y):
+            if not self.can_exist_here(self.board, self.location[0] + x, self.location[1] + y):
                 return False
         return True
     
@@ -327,7 +353,7 @@ class Piece:
     def move_down(self):
         self.remove_grid()
         if not self.can_move_down():
-            self.filld_grid()
+            self.fill_grid()
             return False
         
         self.location[0] += 1
@@ -340,7 +366,7 @@ class Piece:
             self.fill_grid()
             return False
         
-        self.lcoation[1] -= 1
+        self.location[1] -= 1
         self.fill_grid()
         return True
     
@@ -368,9 +394,14 @@ class Piece:
     
 
 
+
+
 if __name__ == "__main__":
+    style.use("ggplot")
     game = Tetris()
     game.restart()
     while True:
         response = input("Type d,l, or r.")
         game.process_input(response)
+        if game.game_over:
+            game.restart()
