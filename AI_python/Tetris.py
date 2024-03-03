@@ -137,25 +137,27 @@ class Tetris:
             print(self.max_height())
         elif response == 'disparity':
             print(self.overall_height_disparity())
+        elif response == "states":
+            print(self.get_next_states())
         
         self.render()
 
     def to_RGB(self, color):
         match color:
             case Color.RED:
-                return (254, 151, 32)
+                return (255, 0, 0) 
             case Color.BLUE:
-                return (255, 255, 0)
+                return (0, 0, 255)
             case Color.ORANGE:
-                return (147, 88, 254)
+                return (254, 151, 32)
             case Color.GREEN:
                 return (54, 175, 144)
             case Color.YELLOW:
-                return (255, 0, 0)
+                return (255, 255, 0)
             case Color.LIGHT_BLUE:
                 return (102, 217, 238)
             case Color.PURPLE:
-                return (0, 0, 255)
+                return (147, 88, 254)
             case None:
                 return (0,0,0)
 
@@ -215,13 +217,79 @@ class Tetris:
     # TODO: CREATING the functions below for DQN:
 
     def get_next_states(self):
-        # TODO: FINISH
-        return
-    
+        action_to_state = {}
+        total_rotations = None
+        saved_color = self.current_piece.color
+        match saved_color:
+            case Color.RED | Color.GREEN | Color.LIGHT_BLUE:
+                total_rotations = 2
+            case Color.BLUE | Color.ORANGE | Color.PURPLE:
+                total_rotations = 4
+            case Color.YELLOW:
+                total_rotations = 1
+        
+        # Save current board status to recover it later on:
+        self.current_piece.delete_piece()
+        saved_board = [x[:] for x in self.board]
+        saved_cleared_lines = self.cleared_lines
+        
+        # Figuring out all possible moves that could be selected by the AI
+        for i in range(1,total_rotations+1):
+            for j in range(Tetris.rows):
+                # Reset board status
+                self.board = saved_board
+                self.current_piece = Piece([2,4], saved_color, self.board)
+                self.current_piece.verified_piece()
+                self.cleared_lines = saved_cleared_lines
+                
+                for _ in range(i):
+                    self.current_piece.rotate_clockwise() # TODO: A little iffy about this one
+
+                for _ in range(10): # Shifting to the leftmost possible location
+                    self.current_piece.move_left()
+
+                for _ in range(j):
+                    self.current_piece.move_right()
+
+                for _ in range(22): # Bring as far down as possible
+                    self.current_piece.move_down()
+
+                x_loc = self.current_piece.location[1]
+
+                # # Debugging:
+                # self.print_board()
+                # print()
+                # print()
+                # #
+
+                self.clear_possible_lines()
+                action_to_state[(x_loc, i)] = self.get_all_States()
+                self.current_piece.delete_piece()
+
+        # Bringing back my piece/board status:
+        self.board = saved_board
+        self.current_piece = Piece([2,4], saved_color, self.board)
+        self.current_piece.verified_piece()
+        self.cleared_lines = saved_cleared_lines
+
+        return action_to_state
+
+    # DEBUGGING FUNCTION
+    def print_board(self):
+        for x in range(Tetris.cols):
+            temp = ""
+            for y in range(Tetris.rows):
+                temp += "  " + str(0 if self.board[x][y] == None else 1)
+            print(temp)
+    #
+
     def take_action(self):
         # TODO: FINISH
         return
     
+    def get_all_States(self): # Whichever function that takes this return value should convert it(wrap it with) to a pytorch tensor
+        return [self.cleared_lines, self.blanks(), self.overall_height_disparity(), self.max_height()]
+
     def blanks(self):
         # If there are occupied grid cells above an empty cell, then that is a blank/hole
         total_sum = 0
@@ -462,7 +530,7 @@ if __name__ == "__main__":
     game = Tetris()
     game.restart()
     while True:
-        response = input("Type d,l, or r.")
+        response = input("Type d,l, or r:  ")
         game.process_input(response)
         if game.game_over:
             game.restart()
