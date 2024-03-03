@@ -41,6 +41,18 @@ class Tetris:
         self.score = 0
         self.cleared_lines = 0
 
+    
+    def restart(self):
+        self.board = [[None] * Tetris.rows for _ in range(Tetris.cols)]
+        self.score = 0
+        self.cleared_lines = 0
+        self.upcoming_blocks = []
+        self.generate_upcoming_blocks()
+        self.generate_upcoming_blocks()
+        self.spawn_piece()
+        self.game_over = False
+        self.tetriminos = 0
+        
     def generate_upcoming_blocks(self):
         temp = [Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE, Color.YELLOW, Color.LIGHT_BLUE, Color.PURPLE]
         random.shuffle(temp)
@@ -136,26 +148,23 @@ class Tetris:
             case None:
                 return (0,0,0)
 
-    def render(self, video=None):
-        if self.game_over == False:
-            img = [self.to_RGB(p) for row in self.board for p in row]
-        else:
-            img = [self.to_RGB(p) for row in self.board for p in row]
-        
-
+    # Followed an online guide for specific rendering processes; subject to future change
+    def render(self, video=None): 
+        # Rendering board; assinging RGB values based on Color ENUM values
+        img = [self.to_RGB(p) for row in self.board for p in row]
         img = np.array(img).reshape((self.cols, self.rows, 3)).astype(np.uint8)
         img = img[..., ::-1]
+        
+        # Rescaling process
         img = Image.fromarray(img, "RGB")
-
         img = img.resize((self.rows * self.block_size, self.cols * self.block_size), 0)
         img = np.array(img)
         img[[i * self.block_size for i in range(self.cols)], :, :] = 0
         img[:, [i * self.block_size for i in range(self.rows)], :] = 0
-
-
         img = np.concatenate((img, self.additional_board), axis=1)
 
 
+        # Rendering Score, Pieces, and Lines with their actual values
         cv2.putText(img, "Score:", (self.rows * self.block_size + int(self.block_size / 2), self.block_size),
                     fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
         cv2.putText(img, str(self.score),
@@ -174,26 +183,43 @@ class Tetris:
                     (self.rows * self.block_size + int(self.block_size / 2), 8 * self.block_size),
                     fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
 
+        # Upon request, video is recorded; Primarily used when testing
         if video:
             video.write(img)
 
-        cv2.imshow("Deep Q-Learning Tetris", img)
+        cv2.imshow("DQN TETRIS GAMEPLAY", img)
         cv2.waitKey(1)
-
         return
 
 
-    def restart(self):
-        self.board = [[None] * Tetris.rows for _ in range(Tetris.cols)]
-        self.score = 0
-        self.cleared_lines = 0
-        self.upcoming_blocks = []
-        self.generate_upcoming_blocks()
-        self.generate_upcoming_blocks()
-        self.spawn_piece()
-        self.game_over = False
-        self.tetriminos = 0
 
+    ######################################################
+    # FUNCTIONS RELATING TO DQN #
+
+    # Note: I decided to calculate/pass the number of wells, height disaprity between adjacent columns
+    # and max height as the states to my Deep Q learning model. The following functions are directly
+    # related to and/or facilitate processing the aformentioned values.
+
+    # TODO: CREATING the functions below for DQN:
+
+    def get_next_states():
+        # TODO: FINISH
+        return
+    def take_action():
+        # TODO: FINISH
+        return
+    def well_count():
+        # TODO: FINISH
+        return
+    def overall_height_disparity():
+        # TODO: FINISH
+        return
+    def max_height():
+        # TODO: FINISH
+        return
+
+
+    ######################################################
 
 
 
@@ -394,8 +420,7 @@ class Piece:
     
 
 
-
-
+# For those want to play it yourself, utilize the following main function:
 if __name__ == "__main__":
     style.use("ggplot")
     game = Tetris()
