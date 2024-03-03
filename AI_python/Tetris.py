@@ -74,26 +74,26 @@ class Tetris:
             return
 
     def clear_possible_lines(self):
-        for i in range(Tetris.rows):
+        for i in range(Tetris.cols):
             gap_exists = False
-            for j in range(Tetris.cols):
+            for j in range(Tetris.rows):
                 if self.board[i][j] == None:
                     gap_exists = True
                     break
             if gap_exists:
                 continue
-            self.delete_row()
+            self.delete_row(i)
             self.cleared_lines += 1
     
     def delete_row(self, row_index):
-        for i in range(Tetris.cols):
+        for i in range(Tetris.rows):
             self.board[row_index][i] = None
         
         for i in range(row_index, 0, -1):
-            for j in range(Tetris.cols):
+            for j in range(Tetris.rows):
                 self.board[i][j] = self.board[i-1][j]
         
-        for i in range(Tetris.cols):
+        for i in range(Tetris.rows):
             self.board[0][i] = None
 
     def save_piece(self):
@@ -130,6 +130,12 @@ class Tetris:
             temp = self.save_piece()
             if not temp:
                 self.game_over = True
+        elif response == 'blanks':
+            print(self.blanks())
+        elif response == 'max h':
+            print(self.max_height())
+        elif response == 'disparity':
+            print(self.overall_height_disparity())
         
         self.render()
 
@@ -200,39 +206,65 @@ class Tetris:
     ######################################################
     # FUNCTIONS RELATING TO DQN #
 
-    # Note: I decided to calculate/pass the number of wells, height disaprity between adjacent columns
-    # and max height as the states to my Deep Q learning model. The following functions are directly
-    # related to and/or facilitate processing the aformentioned values.
+    # Note: I decided to calculate/pass the number of blank spaces in between occupied grid cells, 
+    # height disaprity between adjacent columns and max height as the states to my Deep Q learning 
+    # model. The following functions are directly related to and/or facilitate processing the 
+    # aformentioned values.
 
     # TODO: CREATING the functions below for DQN:
 
-    def get_next_states():
+    def get_next_states(self):
         # TODO: FINISH
         return
     
-    def take_action():
+    def take_action(self):
         # TODO: FINISH
         return
     
-    def well_count():
-        # TODO: FINISH
-        return
+    def blanks(self):
+        # If there are occupied grid cells above an empty cell, then that is a blank/hole
+        total_sum = 0
+        empty = False
+        temp_sum = 0
+        for i in range(Tetris.rows):
+            for j in range(20,-1,-1):
+                if empty:
+                    empty = True
+                    temp_sum += 1
+                else:
+                    empty = False
+                    total_sum += temp_sum
+                    temp_sum = 0
+        return total_sum
     
-    def overall_height_disparity():
-        # TODO: FINISH
-        return
+    def overall_height_disparity(self):
+        # I define the overall height disaprity to be the sum of the differences in height between adjacent columns
+        heights = []
+        for i in range(Tetris.rows):
+            for j in range(Tetris.cols):
+                if self.board[j][i] != None:
+                    heights.append(Tetris.cols - j)
+                    break
+
+        disparity = 0
+        for i in range(len(heights)-1):
+            disparity += abs(heights[i+1] - heights[i])
+        return disparity
     
-    def max_height():
-        # TODO: FINISH
-        return
+    def max_height(self):
+        heights = []
+        for i in range(Tetris.rows):
+            for j in range(Tetris.cols):
+                if self.board[j][i] != None:
+                    heights.append(Tetris.cols - j)
+                    break
+
+        return max(heights)
 
 
     ######################################################
 
 
-
-######################################################
-        
 
 class Color(Enum):
     
@@ -243,12 +275,7 @@ class Color(Enum):
     YELLOW = 5
     LIGHT_BLUE = 6
     PURPLE = 7
-
-
-######################################################
     
-
-
 
 class Piece:
     def __init__(self, location, color, board):
@@ -287,7 +314,7 @@ class Piece:
 
 
     def can_exist_here(self, board, x, y):
-        if x < 0 or x >= Tetris.cols or y < 0 or y >= Tetris.rows or board[x][y] != None: # TODO: CHECK THIS CONDITION AGAIN
+        if x < 0 or x >= Tetris.cols or y < 0 or y >= Tetris.rows or board[x][y] != None:
             return False
         return True
 
@@ -352,7 +379,7 @@ class Piece:
         for i in range(len(self.parts)):
             x = self.parts[i][0]
             y = self.parts[i][1]
-            self.board[self.location[0] + x][self.location[1] + y] = self.color # TODO: CHECK THIS LATER
+            self.board[self.location[0] + x][self.location[1] + y] = self.color 
 
     def remove_grid(self):
         for i in range(len(self.parts)):
