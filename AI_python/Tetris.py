@@ -3,18 +3,20 @@
 # will be replaced/substituted with python counterparts (for instance, game screen rendering).
 
 import numpy as np
-import torch
 import random
 from enum import Enum
 import cv2
 from PIL import Image
-from matplotlib import style
-
 
 
 class Tetris:
     rows = 22
     cols = 10
+    upcoming_blocks_visible_length = 6
+    block_size = 20
+    visible_piece_size = 120
+    x_padding = 20
+    y_padding = 15
 
     def __init__(self):
         # Initializing game-related fields
@@ -28,6 +30,10 @@ class Tetris:
         self.generate_upcoming_blocks()
         self.spawn_piece()
         self.game_over = False
+
+        # Used for game screen rendering
+        self.additional_board = np.ones((self.cols * self.block_size, self.rows * int(self.block_size / 2), 3), dtype=np.uint8) * np.array([204, 204, 255], dtype=np.uint8)
+        self.text_color_val = (200, 20, 220)
 
         # Initializing fields used for AI training
         self.score = 0
@@ -92,8 +98,67 @@ class Tetris:
             self.current_piece.move_left()
         self.render()
 
-    def render(self):
+    def to_RGB(self, color):
+        match color:
+            case Color.RED:
+                return (0, 0, 255)
+            case Color.BLUE:
+                return (255, 255, 0)
+            case Color.ORANGE:
+                return (147, 88, 254)
+            case Color.GREEN:
+                return (54, 175, 144)
+            case Color.YELLOW:
+                return (255, 0, 0)
+            case Color.LIGHT_BLUE:
+                return (102, 217, 238)
+            case _:
+                return (254, 151, 32)
+
+    def render(self, video=None):
+        if self.gameover == False:
+            img = [self.to_RGB(p) for row in self.board for p in row]
+        else:
+            img = [self.to_RGB(p) for row in self.board for p in row]
+        img = np.array(img).reshape((self.cols, self.rows, 3)).astype(np.uint8)
+        img = img[..., ::-1]
+        img = Image.fromarray(img, "RGB")
+
+        img = img.resize((self.rows * self.block_size, self.cols * self.block_size), 0)
+        img = np.array(img)
+        img[[i * self.block_size for i in range(self.cols)], :, :] = 0
+        img[:, [i * self.block_size for i in range(self.rows)], :] = 0
+
+
+        img = np.concatenate((img, self.additional_board), axis=1)
+
+
+        cv2.putText(img, "Score:", (self.rows * self.block_size + int(self.block_size / 2), self.block_size),
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+        cv2.putText(img, str(self.score),
+                    (self.rows * self.block_size + int(self.block_size / 2), 2 * self.block_size),
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+
+        cv2.putText(img, "Pieces:", (self.rows * self.block_size + int(self.block_size / 2), 4 * self.block_size),
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+        cv2.putText(img, str(self.tetrominoes),
+                    (self.rows * self.block_size + int(self.block_size / 2), 5 * self.block_size),
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+
+        cv2.putText(img, "Lines:", (self.rows * self.block_size + int(self.block_size / 2), 7 * self.block_size),
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+        cv2.putText(img, str(self.cleared_lines),
+                    (self.rows * self.block_size + int(self.block_size / 2), 8 * self.block_size),
+                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=1.0, color=self.text_color_val)
+
+        if video:
+            video.write(img)
+
+        cv2.imshow("Deep Q-Learning Tetris", img)
+        cv2.waitKey(1)
+
         return
+
 
     def restart(self):
         self.board = [[None] * Tetris.rows for _ in range(Tetris.cols)]
@@ -106,6 +171,10 @@ class Tetris:
 
 
 
+
+######################################################
+        
+
 class Color(Enum):
     RED = 1
     BLUE = 2
@@ -114,6 +183,10 @@ class Color(Enum):
     YELLOW = 5
     LIGHT_BLUE = 6
     PURPLE = 7
+
+
+######################################################
+    
 
 
 
