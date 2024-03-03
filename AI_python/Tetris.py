@@ -240,10 +240,12 @@ class Tetris:
         # I define the overall height disaprity to be the sum of the differences in height between adjacent columns
         heights = []
         for i in range(Tetris.rows):
+            temp_height = 22
             for j in range(Tetris.cols):
                 if self.board[j][i] != None:
-                    heights.append(Tetris.cols - j)
                     break
+                temp_height -= 1
+            heights.append(temp_height)
 
         disparity = 0
         for i in range(len(heights)-1):
