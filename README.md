@@ -2,6 +2,16 @@
 
 # Project: Self-learning Tetris AI #
 
+
+https://github.com/seokyim8/Tetris/assets/49558316/1fe17249-b44f-487b-b364-db8d11e9acaa
+
+vs
+
+https://github.com/seokyim8/Tetris/assets/49558316/c0676a0e-d3f6-4cf3-989d-19941eb24027
+
+
+
+
 # Project Summary: Tetris project with self-learning AI using DQN
 
 This project is an attempt to "resurrect" my previously attempted Tetris game application by adding a "self-learning AI" feature. All of the Java code used for building my Tetris game has been translated 
