@@ -8,6 +8,7 @@ from enum import Enum
 import cv2
 from PIL import Image
 from matplotlib import style
+from copy import deepcopy
 
 
 class Tetris:
@@ -119,6 +120,9 @@ class Tetris:
                 self.clear_possible_lines()
                 if not self.spawn_piece():
                     self.game_over = True
+        elif response == 'dd':
+            for _ in range(22):
+                self.current_piece.move_down()
         elif response == 'l':
             self.current_piece.move_left()
         elif response == 'r':
@@ -233,14 +237,15 @@ class Tetris:
         
         # Save current board status to recover it later on:
         self.current_piece.delete_piece()
-        saved_board = [x[:] for x in self.board]
+        saved_board = deepcopy(self.board)
         saved_cleared_lines = self.cleared_lines
-        
+
         # Figuring out all possible moves that could be selected by the AI
         for i in range(1,total_rotations+1):
             for j in range(Tetris.rows):
                 # Reset board status
                 self.board = saved_board
+                saved_board = deepcopy(self.board)
                 self.current_piece = Piece([2,4], saved_color, self.board)
                 self.current_piece.verified_piece()
                 self.cleared_lines = saved_cleared_lines
@@ -257,16 +262,8 @@ class Tetris:
                 for _ in range(22): # Bring as far down as possible
                     self.current_piece.move_down()
 
-                x_loc = self.current_piece.location[1]
-
-                # # Debugging:
-                # self.print_board()
-                # print()
-                # print()
-                # #
-
                 self.clear_possible_lines()
-                action_to_state[(x_loc, i)] = self.get_all_States()
+                action_to_state[(j, i)] = self.get_all_States()
                 self.current_piece.delete_piece()
 
         # Bringing back my piece/board status:
@@ -278,11 +275,11 @@ class Tetris:
         return action_to_state
 
     # Function for Debugging
-    def print_board(self):
+    def print_board(self, board):
         for x in range(Tetris.cols):
             temp = ""
             for y in range(Tetris.rows):
-                temp += "  " + str(0 if self.board[x][y] == None else 1)
+                temp += "  " + str(0 if board[x][y] == None else 1)
             print(temp)
     #
 
