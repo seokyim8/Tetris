@@ -2,12 +2,10 @@
 
 # Project: Self-learning Tetris AI #
 
-
-https://github.com/seokyim8/Tetris/assets/49558316/1fe17249-b44f-487b-b364-db8d11e9acaa
-
+![model_2000-ezgif com-video-to-gif-converter](https://github.com/seokyim8/Tetris/assets/49558316/b3a7e0f4-379e-4393-ab71-770208e9b349)
 vs
+![model_500-ezgif com-video-to-gif-converter](https://github.com/seokyim8/Tetris/assets/49558316/7bbae939-1527-4838-953b-20aa55b73c6a)
 
-https://github.com/seokyim8/Tetris/assets/49558316/c0676a0e-d3f6-4cf3-989d-19941eb24027
 
 
 
