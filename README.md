@@ -2,7 +2,7 @@
 
 # Project Summary: Tetris project with self-learning AI
 
-This project is an attempt to "resurrect" my previously attempted Tetris game application by adding a "self-learning AI" feature. All of the Java code used for building the Tetris game has been translated 
+This project is an attempt to "resurrect" my previously attempted Tetris game application by adding a "self-learning AI" feature. All of the Java code used for building my Tetris game has been translated 
 to Python (by hand), and additional libraries (like Pytorch) were used to enable Deep Q Learning for the Tetris bot. Details are listed below:
 
 ### Method Used: Deep Q Learning with neural networks.
