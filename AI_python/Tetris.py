@@ -189,22 +189,30 @@ class Tetris:
 
         # Rendering Score, Pieces, and Lines with their actual values
         cv2.putText(img, "Score:", (self.rows * self.block_size + int(self.block_size / 2), self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
         cv2.putText(img, str(self.score),
                     (self.rows * self.block_size + int(self.block_size / 2), 2 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
 
         cv2.putText(img, "Pieces:", (self.rows * self.block_size + int(self.block_size / 2), 4 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
         cv2.putText(img, str(self.tetriminos),
                     (self.rows * self.block_size + int(self.block_size / 2), 5 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
 
         cv2.putText(img, "Lines:", (self.rows * self.block_size + int(self.block_size / 2), 7 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
         cv2.putText(img, str(self.cleared_lines),
                     (self.rows * self.block_size + int(self.block_size / 2), 8 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_DUPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
+        
+        cv2.putText(img, "Next:", (self.rows * self.block_size + int(self.block_size / 2), 10 * self.block_size),
+                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
+        ## EXPERIMENTAL
+        cv2.putText(img, str(self.upcoming_blocks[0]),
+                    (self.rows * self.block_size + int(self.block_size / 2), 11 * self.block_size),
+                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.3, color=self.text_color_val)
+        ##
 
         # Upon request, video is recorded; Primarily used when testing
         if video:
@@ -378,6 +386,23 @@ class Color(Enum):
     YELLOW = 5
     LIGHT_BLUE = 6
     PURPLE = 7
+
+    def __str__(self) -> str:
+        match self:
+            case Color.RED:
+                return "RED"
+            case Color.BLUE:
+                return "BLUE"
+            case Color.ORANGE:
+                return "ORANGE"
+            case Color.GREEN:
+                return "GREEN"
+            case Color.YELLOW:
+                return "YELLOW"
+            case Color.LIGHT_BLUE:
+                return "LIGHT_BLUE"
+            case _:
+                return "PURPLE"
     
 
 class Piece:
