@@ -10,13 +10,13 @@ import numpy as np
 # Preset of Parameters/Hyperparameters; TODO: Arbitrarily selected for now:
 LEARNING_RATE = 0.001
 REPLAY_MEM_SIZE = 25000
-MAX_EPISODE = 4000
+MAX_EPISODE = 2000
 INITIAL_EPSILON = 1
 FINAL_EPSILON = 0.001
 EPSILON_DELTA = (INITIAL_EPSILON - FINAL_EPSILON)/MAX_EPISODE
 BATCH_SIZE = 512
 GAMMA = 0.99
-SAVE_INTERVAL = 700
+SAVE_INTERVAL = 50
 SAVE_PATH = "./Trained_Models" 
 
 def train():
@@ -82,6 +82,11 @@ def train():
 
         # Retreiving replay memory at random; learning from the past, basically
         batch = sample(replay_memory, min(len(replay_memory), BATCH_SIZE))
+
+        # Debugging
+        # print(batch)
+        #
+
         state_batch, reward_batch, next_state_batch, terminal_batch = zip(*batch)
         state_batch = torch.stack(tuple(state for state in state_batch))
         reward_batch = torch.from_numpy(np.array(reward_batch, dtype=np.float32)[:, None])

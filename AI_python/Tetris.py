@@ -51,9 +51,13 @@ class Tetris:
         self.upcoming_blocks = []
         self.generate_upcoming_blocks()
         self.generate_upcoming_blocks()
-        self.spawn_piece()
         self.game_over = False
         self.tetriminos = 0
+
+        tbr = self.get_all_States() # need to do this before spwaning new piece to get accurate state measurements
+        self.spawn_piece()
+        
+        return tbr
         
     def generate_upcoming_blocks(self):
         temp = [Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE, Color.YELLOW, Color.LIGHT_BLUE, Color.PURPLE]
@@ -306,14 +310,14 @@ class Tetris:
             self.render(video)
 
         # Score is the to-be-returned reward value
-        temp_score = Tetris.rows * (lines ** 2) + 2 # TODO: Arbitrary values for now
+        temp_score = Tetris.rows * (lines * 10) + 1 # TODO: Arbitrary values for now
         self.score += temp_score
 
         if not self.spawn_piece():
             self.game_over = True
         
         if self.game_over:
-            temp_score -= 5
+            self.score -= 5
 
         return temp_score, self.game_over
     
@@ -353,10 +357,12 @@ class Tetris:
     def max_height(self):
         heights = []
         for i in range(Tetris.rows):
+            temp_height = Tetris.cols
             for j in range(Tetris.cols):
                 if self.board[j][i] != None:
-                    heights.append(Tetris.cols - j)
                     break
+                temp_height -= 1
+            heights.append(temp_height)
 
         return max(heights)
 

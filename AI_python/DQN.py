@@ -9,9 +9,9 @@ class DQN(nn.Module):
         self.activation = nn.ReLU()
 
         # Utilizing nn.Linear() functions' default weight initialization process: Kaiming uniform initialization
-        self.layer1 = nn.Linear(in_features = 4, out_features = 56, bias = True)
-        self.layer2 = nn.Linear(in_features = 56, out_features = 56, bias = True)
-        self.layer3 = nn.Linear(in_features = 56, out_features = 1, bias = True)
+        self.layer1 = nn.Linear(in_features = 4, out_features = 60, bias = True)
+        self.layer2 = nn.Linear(in_features = 60, out_features = 60, bias = True)
+        self.layer3 = nn.Linear(in_features = 60, out_features = 1, bias = True)
 
     def forward(self, states):
         output = nn.Flatten()(states)
