@@ -142,8 +142,6 @@ class Tetris:
                 self.game_over = True
         elif response == 'blanks':
             print(self.blanks())
-        elif response == 'max h':
-            print(self.max_height())
         elif response == 'disparity':
             print(self.overall_height_disparity())
         elif response == "states":
@@ -322,7 +320,7 @@ class Tetris:
         return temp_score, self.game_over
     
     def get_all_States(self):
-        return torch.Tensor([self.cleared_lines, self.blanks(), self.overall_height_disparity(), self.max_height()])
+        return torch.Tensor([self.cleared_lines, self.blanks(), self.overall_height_disparity(), self.total_height()])
 
     def blanks(self):
         # If there are occupied grid cells above an empty cell, then that is a blank/hole
@@ -354,7 +352,7 @@ class Tetris:
             disparity += abs(heights[i+1] - heights[i])
         return disparity
     
-    def max_height(self):
+    def total_height(self):
         heights = []
         for i in range(Tetris.rows):
             temp_height = Tetris.cols
@@ -364,7 +362,7 @@ class Tetris:
                 temp_height -= 1
             heights.append(temp_height)
 
-        return max(heights)
+        return sum(heights)
 
 
     ######################################################
