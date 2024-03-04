@@ -1,6 +1,8 @@
 #### Creator: Seok Yim (Noah)
 
-# Project Summary: Tetris project with self-learning AI
+# Project: Self-learning Tetris AI #
+
+# Project Summary: Tetris project with self-learning AI using DQN
 
 This project is an attempt to "resurrect" my previously attempted Tetris game application by adding a "self-learning AI" feature. All of the Java code used for building my Tetris game has been translated 
 to Python (by hand), and additional libraries (like Pytorch) were used to enable Deep Q Learning for the Tetris bot. Details are listed below:
@@ -23,4 +25,13 @@ to Python (by hand), and additional libraries (like Pytorch) were used to enable
     game mechanics: classic(old) Tetris
     t-spin: not available
     saving functionality: available for human-driven gameplay, not available for AI
-  
+
+### How to access/view/use the AI:
+    1. Go into AI_python directory
+    2. Run "python Test.py" (you can set MODEL_NAME to any other model contained in Trained_Models directory)
+
+### How to train the AI:
+    1. Go into AI_python directory
+    2. Run "python Train.py" (you can tweak the parameters for possibly better results)
+    3. If desired, you can modify the DQN network structure by modifying DQN.py
+    4. If desired, you can enable cuda operation with pytorch to speed up the process (Check availability through "torch.cuda.is_available()") 
