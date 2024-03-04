@@ -36,8 +36,8 @@ class Tetris:
         self.tetriminos = 0
 
         # Used for game screen rendering
-        self.additional_board = np.ones((self.cols * self.block_size, self.rows * int(self.block_size / 2), 3), dtype=np.uint8) * np.array([204, 204, 255], dtype=np.uint8)
-        self.text_color_val = (200, 20, 220)
+        self.additional_board = np.ones((self.cols * self.block_size, self.rows * int(self.block_size / 2), 3), dtype=np.uint8) * np.array([(210, 210, 230)], dtype=np.uint8)
+        self.text_color_val = (255, 178, 102)
 
         # Initializing fields used for AI training
         self.score = 0
@@ -189,29 +189,29 @@ class Tetris:
 
         # Rendering Score, Pieces, and Lines with their actual values
         cv2.putText(img, "Score:", (self.rows * self.block_size + int(self.block_size / 2), self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_ITALIC, fontScale=0.5, color=self.text_color_val)
         cv2.putText(img, str(self.score),
                     (self.rows * self.block_size + int(self.block_size / 2), 2 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_ITALIC, fontScale=0.5, color=self.text_color_val)
 
         cv2.putText(img, "Pieces:", (self.rows * self.block_size + int(self.block_size / 2), 4 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_ITALIC, fontScale=0.5, color=self.text_color_val)
         cv2.putText(img, str(self.tetriminos),
                     (self.rows * self.block_size + int(self.block_size / 2), 5 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_ITALIC, fontScale=0.5, color=self.text_color_val)
 
         cv2.putText(img, "Lines:", (self.rows * self.block_size + int(self.block_size / 2), 7 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_ITALIC, fontScale=0.5, color=self.text_color_val)
         cv2.putText(img, str(self.cleared_lines),
                     (self.rows * self.block_size + int(self.block_size / 2), 8 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_ITALIC, fontScale=0.5, color=self.text_color_val)
         
         cv2.putText(img, "Next:", (self.rows * self.block_size + int(self.block_size / 2), 10 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.5, color=self.text_color_val)
+                    fontFace=cv2.FONT_ITALIC, fontScale=0.5, color=self.text_color_val)
         ## EXPERIMENTAL
         cv2.putText(img, str(self.upcoming_blocks[0]),
                     (self.rows * self.block_size + int(self.block_size / 2), 11 * self.block_size),
-                    fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=0.3, color=self.text_color_val)
+                    fontFace=cv2.FONT_ITALIC, fontScale=0.3, color=self.text_color_val)
         ##
 
         # Upon request, video is recorded; Primarily used when testing

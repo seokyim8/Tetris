@@ -4,7 +4,7 @@ import time
 import cv2
 
 LOAD_PATH = "./Trained_Models" 
-MODEL_NAME = "/model_1000"
+MODEL_NAME = "/model_2000"
 FPS = 120
 
 def test():
@@ -29,7 +29,7 @@ def test():
         reward, terminal = environment.take_action(action, True, output)
 
         # For better viewing experience # 
-        time.sleep(1)
+        time.sleep(0.3)
 
         if terminal:
             output.release()
