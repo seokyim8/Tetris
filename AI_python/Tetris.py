@@ -9,6 +9,7 @@ import cv2
 from PIL import Image
 from matplotlib import style
 from copy import deepcopy
+import torch
 
 
 class Tetris:
@@ -145,7 +146,7 @@ class Tetris:
             print(self.get_next_states())
         elif response == "action":
             temp_input = input("please entre x i:  ")
-            self.take_action([int(x) for x in temp_input.split(" ")])
+            self.take_action([int(x) for x in temp_input.split(" ")], False, None)
         
         self.render()
 
@@ -283,7 +284,7 @@ class Tetris:
             print(temp)
     #
 
-    def take_action(self, action): # action is expected to be of form [x_location, rotation_number]
+    def take_action(self, action, render, video): # action is expected to be of form [x_location, rotation_number]
         # Moving piece to instructed position
         for _ in range(action[1]):
             self.current_piece.rotate_clockwise()
@@ -301,6 +302,9 @@ class Tetris:
         self.clear_possible_lines()
         lines = self.cleared_lines - prev_cleared_lines
 
+        if render: # TODO: iffy about this one
+            self.render(video)
+
         # Score is the to-be-returned reward value
         temp_score = Tetris.rows * (lines ** 2) + 2 # TODO: Arbitrary values for now
         self.score += temp_score
@@ -313,8 +317,8 @@ class Tetris:
 
         return temp_score, self.game_over
     
-    def get_all_States(self): # Whichever function that takes this return value should convert it(wrap it with) to a pytorch tensor
-        return [self.cleared_lines, self.blanks(), self.overall_height_disparity(), self.max_height()]
+    def get_all_States(self):
+        return torch.Tensor([self.cleared_lines, self.blanks(), self.overall_height_disparity(), self.max_height()])
 
     def blanks(self):
         # If there are occupied grid cells above an empty cell, then that is a blank/hole
