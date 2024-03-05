@@ -3,7 +3,7 @@
 # Project: Self-learning Tetris AI #
 
 ## Model with almost no training vs with sufficient training
-![model_500-ezgif com-resize](https://github.com/seokyim8/Tetris/assets/49558316/2334edb3-d3af-4d02-a010-c4b349faee1a)    versus     ![model_2000-ezgif com-crop](https://github.com/seokyim8/Tetris/assets/49558316/3b73e199-0e03-430c-8867-6bb577f1ce48)
+![model_500-ezgif com-resize](https://github.com/seokyim8/Tetris/assets/49558316/2334edb3-d3af-4d02-a010-c4b349faee1a)&nbsp&nbsp&nbspversus&nbsp&nbsp&nbsp![model_2000-ezgif com-crop](https://github.com/seokyim8/Tetris/assets/49558316/3b73e199-0e03-430c-8867-6bb577f1ce48)
 
 
 # Project Summary: Tetris project with self-learning AI using DQN
