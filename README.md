@@ -2,12 +2,13 @@
 
 # Project: Self-learning Tetris AI #
 
-![model_2000-ezgif com-video-to-gif-converter](https://github.com/seokyim8/Tetris/assets/49558316/b3a7e0f4-379e-4393-ab71-770208e9b349)
+## Model with 500 episodes of training
+![model_500-ezgif com-crop](https://github.com/seokyim8/Tetris/assets/49558316/dd2abc51-1d22-456d-950b-0df406cbfdca)
 
+versus
 
-![model_500-ezgif com-video-to-gif-converter](https://github.com/seokyim8/Tetris/assets/49558316/7bbae939-1527-4838-953b-20aa55b73c6a)
-
-
+## Model with 2000 episodes of training
+![model_2000-ezgif com-crop](https://github.com/seokyim8/Tetris/assets/49558316/3b73e199-0e03-430c-8867-6bb577f1ce48)
 
 
 
