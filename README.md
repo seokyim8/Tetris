@@ -2,7 +2,7 @@
 
 # Project: Self-learning Tetris AI #
 
-## Model with almost no training vs with sufficient training
+## Model with almost no training vs with sufficient training(around 2 hours)
 ![model_500-ezgif com-resize](https://github.com/seokyim8/Tetris/assets/49558316/2334edb3-d3af-4d02-a010-c4b349faee1a)&nbsp;&nbsp;&nbsp;versus&nbsp;&nbsp;&nbsp;![final_model-ezgif com-resize](https://github.com/seokyim8/Tetris/assets/49558316/00f62457-6435-44f3-bb47-b6f0df098025)
 
 
