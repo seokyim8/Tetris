@@ -2,12 +2,14 @@
 
 # Project: Self-learning Tetris AI #
 
+#### Preview ####
 ## Model with almost no training (5-10 minutes) vs with sufficient training (around 2 hours)
 ![model_500-ezgif com-resize](https://github.com/seokyim8/Tetris/assets/49558316/2334edb3-d3af-4d02-a010-c4b349faee1a)&nbsp;&nbsp;&nbsp;versus&nbsp;&nbsp;&nbsp;![final_model-ezgif com-resize](https://github.com/seokyim8/Tetris/assets/49558316/00f62457-6435-44f3-bb47-b6f0df098025)
 
 
-
 # Project Summary: Tetris project with self-learning AI using DQN
+
+Objective: Achieving an everlasting Tetris AI through deep reinforcement learning with not-so-complex strategies.
 
 This project is an attempt to "resurrect" my previously attempted Tetris game application by adding a "self-learning AI" feature. All of the Java code used for building my Tetris game has been translated 
 to Python (by hand), and additional libraries (like Pytorch) were used to enable Deep Q Learning for the Tetris bot. Details are listed below:
@@ -40,3 +42,9 @@ to Python (by hand), and additional libraries (like Pytorch) were used to enable
     2. Run "python Train.py" (you can tweak the parameters for possibly better results)
     3. If desired, you can modify the DQN network structure by modifying DQN.py
     4. If desired, you can enable cuda operation with pytorch to speed up the process (Check availability through "torch.cuda.is_available()") 
+
+### Conclusion:
+    1. After enough training(even with arbitrarily chosen hyperparameters and a rather simple epsilon-decay strategy), my model was able to persist for what seemed like an indefinite amount of time.
+    2. One thing I noticed after comparing my model with others' Tetris AIs with the same DQN approach was that the amount of time for their models to reach the same result(lasting indefinitely) was significantly shorter (around 20 minutes to 1 hour).
+        2.1. I am speculating that this is due to me using sub-perfect gamma or epsilon values, along with other parameters that can be adjusted for improvements.
+    3. However, with enough time spent, the model does become good enough to last forever. 
