@@ -26,10 +26,7 @@ to Python (by hand), and additional libraries like Pytorch were used to enable D
     gamma(discount factor/rate) = 0.99
     batch size = 512
 
-### Game screen rendering: handled through opencv (referred to online guides/codes; hence, it may not be the best practice).
-    output format of testing: .mp4
-
-### Game Logic: Taken from my previous Java code.
+### Game Logic:
     game mechanics: classic(old) Tetris
     t-spin: not available
     saving functionality: available for human-driven gameplay, not available for AI
