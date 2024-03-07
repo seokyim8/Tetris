@@ -13,14 +13,14 @@ Project: Self-learning Tetris AI
 Objective: Achieving an everlasting Tetris AI through deep reinforcement learning with not-so-complex strategies.
 
 This project is an attempt to "resurrect" my previously attempted Tetris game application by adding a "self-learning AI" feature. All of the Java code used for building my Tetris game has been translated 
-to Python (by hand), and additional libraries (like Pytorch) were used to enable Deep Q Learning for the Tetris bot. Details are listed below:
+to Python (by hand), and additional libraries like Pytorch were used to enable Deep Q Learning for the Tetris bot. Details are listed below:
 
 ### Method Used: Deep Q Learning with neural networks.
     - NOTE: Most of the following values/strategies were arbitrarily chosen; hence, they are subject to change upon finding a better model-developing strategy! -
     number of layers: 3
     learning rate: 0.001
     activation function: ReLU
-    epsilon-greedy strategy: linear (for simplicity)
+    epsilon-greedy strategy: linear
         epsilon decay formula: EPSILON_DELTA = (INITIAL_EPSILON - FINAL_EPSILON) / MAX_EPISODE
     max number of iterations/episodes: 20000 
     gamma(discount factor/rate) = 0.99
