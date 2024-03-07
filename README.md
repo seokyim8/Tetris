@@ -19,7 +19,7 @@ to Python (by hand), and additional libraries (like Pytorch) were used to enable
     activation function: ReLU
     epsilon-greedy strategy: linear (for simplicity)
         epsilon decay formula: EPSILON_DELTA = (INITIAL_EPSILON - FINAL_EPSILON) / MAX_EPISODE
-    max number of iterations/episodes: 2000 
+    max number of iterations/episodes: 20000 
     gamma(discount factor/rate) = 0.99
     batch size = 512
 
