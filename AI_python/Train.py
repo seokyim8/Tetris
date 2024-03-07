@@ -10,7 +10,7 @@ import numpy as np
 # Preset of Parameters/Hyperparameters; TODO: Arbitrarily selected for now:
 LEARNING_RATE = 0.001
 REPLAY_MEM_SIZE = 25000
-MAX_EPISODE = 2000
+MAX_EPISODE = 20000
 INITIAL_EPSILON = 1
 FINAL_EPSILON = 0.001
 EPSILON_DELTA = (INITIAL_EPSILON - FINAL_EPSILON)/MAX_EPISODE
@@ -119,11 +119,15 @@ def train():
         print("Total Lines Cleared: ", final_cleared_lines)
 
 
+        # Keeping track of the very last model, since I
+        # for got to do this last time and lost my model
+        torch.save(model, SAVE_PATH + "/final_model")
+
         # Consistent saving 
         if episode > 0 and episode % SAVE_INTERVAL == 0:
             torch.save(model, SAVE_PATH + "/model_" + str(episode))
 
-    torch.save(model, SAVE_PATH + "/final_model")
+    
 
 
 

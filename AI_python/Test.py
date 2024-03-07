@@ -4,8 +4,8 @@ import time
 import cv2
 
 LOAD_PATH = "./Trained_Models" 
-MODEL_NAME = "/model_2000"
-FPS = 120
+MODEL_NAME = "/final_model"
+screen_refresh_rate = 120
 
 def test():
     torch.manual_seed(256)
@@ -16,7 +16,7 @@ def test():
     environment.restart()
     
     output = cv2.VideoWriter("model_output.mp4", cv2.VideoWriter_fourcc(*"MJPG"),
-                             FPS, (int(1.5 * Tetris.rows * Tetris.block_size), Tetris.cols * Tetris.block_size))
+                             screen_refresh_rate, (int(1.5 * Tetris.rows * Tetris.block_size), Tetris.cols * Tetris.block_size))
     while True:
         next_steps = environment.get_next_states()
 
@@ -29,7 +29,7 @@ def test():
         reward, terminal = environment.take_action(action, True, output)
 
         # For better viewing experience # 
-        time.sleep(0.3)
+        # time.sleep(0.3)
 
         if terminal:
             output.release()
