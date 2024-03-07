@@ -1,8 +1,7 @@
 ### Tired of losing to cheaters on Tetris? Let's try beating them!
 ##### Creator: Seok Yim (Noah)
-
-## Project: Self-learning Tetris AI 
 <br>
+## Project: Self-learning Tetris AI 
 
 #### *** Preview *** 
 ### Model with almost no training (5-10 minutes) vs with sufficient training (around 2 hours)
