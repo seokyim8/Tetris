@@ -16,7 +16,6 @@ This project is an attempt to "resurrect" my previously attempted Tetris game ap
 to Python (by hand), and additional libraries like Pytorch were used to enable Deep Q Learning for the Tetris bot. Details are listed below:
 
 ### Method Used: Deep Q Learning with neural networks.
-    - NOTE: Most of the following values/strategies were arbitrarily chosen; hence, they are subject to change upon finding a better model-developing strategy! -
     number of layers: 3
     learning rate: 0.001
     activation function: ReLU
