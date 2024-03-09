@@ -30,7 +30,7 @@ to Python (by hand), and additional libraries like Pytorch were used to enable D
     t-spin: not available
     saving functionality: available for human-driven gameplay, not available for AI
 
-### How to access/view/use the AI:
+### How to access/use the AI:
     1. Go into AI_python directory
     2. Run "python Test.py" (you can set MODEL_NAME to any other model contained in Trained_Models directory)
 
