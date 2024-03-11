@@ -14,6 +14,8 @@ Objective: Achieving an everlasting Tetris AI through deep reinforcement learnin
 
 This project is an attempt to "resurrect" my previously attempted Tetris game application by adding a "self-learning AI" feature. All of the Java code used for building my Tetris game has been translated 
 to Python (by hand), and additional libraries like Pytorch were used to enable Deep Q Learning for the Tetris bot. Details are listed below:
+### Technologies Used (for training the model):
+    Python, Pytorch
 
 ### Method Used: Deep Q Learning with neural networks.
     number of layers: 3
